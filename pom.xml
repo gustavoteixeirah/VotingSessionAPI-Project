@@ -15,6 +15,9 @@
     <description>Essa é uma API para uma Sessão de Votação</description>
     <properties>
         <java.version>11</java.version>
+        <sonar.projectKey>VotingSessionAPI</sonar.projectKey>
+        <sonar.organization>devgustavoteixeira</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
     <dependencies>
         <dependency>

@@ -1,4 +1,4 @@
-name: Unit Tests
+name: Continuous Integration
 
 on:
   push:
@@ -23,10 +23,22 @@ jobs:
       - name: Maven Verify
         run: mvn -B clean verify
 
+  sonarcloud:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
 
   notifySlack:
     runs-on: ubuntu-18.04
-    needs: [test]
+    needs: [sonarcloud]
 
     steps:
       - name: Notify slack
@@ -39,7 +51,7 @@ jobs:
 
   notifySlackIfFailure:
     runs-on: ubuntu-18.04
-    needs: [test]
+    needs: [sonarcloud]
     if: failure()
 
     steps:

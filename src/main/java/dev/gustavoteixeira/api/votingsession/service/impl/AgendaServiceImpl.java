@@ -3,6 +3,7 @@ package dev.gustavoteixeira.api.votingsession.service.impl;
 import dev.gustavoteixeira.api.votingsession.dto.request.AgendaRequestDTO;
 import dev.gustavoteixeira.api.votingsession.dto.request.VoteRequestDTO;
 import dev.gustavoteixeira.api.votingsession.dto.response.AgendaResponseDTO;
+import dev.gustavoteixeira.api.votingsession.dto.response.VoteResponseDTO;
 import dev.gustavoteixeira.api.votingsession.entity.Agenda;
 import dev.gustavoteixeira.api.votingsession.entity.Vote;
 import dev.gustavoteixeira.api.votingsession.exception.AgendaAlreadyExistsException;
@@ -19,13 +20,17 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static dev.gustavoteixeira.api.votingsession.converter.AgendaConverter.getAgendaResponse;
+import static dev.gustavoteixeira.api.votingsession.converter.VoteConverter.getVoteResponse;
 
 @Service
 public class AgendaServiceImpl implements AgendaService {
 
+    public static final String NEGATIVE_VOTE = "NÂO";
+    public static final String POSITIVE_VOTE = "SIM";
     final Logger logger = LoggerFactory.getLogger(AgendaServiceImpl.class);
 
     @Autowired
@@ -37,7 +42,6 @@ public class AgendaServiceImpl implements AgendaService {
     @Override
     public Agenda createAgenda(AgendaRequestDTO agendaRequest) {
 
-        //TODO Use object mapper
         Agenda agenda = Agenda.builder()
                 .name(agendaRequest.getName())
                 .duration(agendaRequest.getDuration())
@@ -50,12 +54,19 @@ public class AgendaServiceImpl implements AgendaService {
     public AgendaResponseDTO getAgenda(String agendaId) {
         Agenda agenda = verifyIfAgendaExist(agendaId);
 
-
         AgendaResponseDTO agendaResponse = getAgendaResponse(agenda);
 
-        //TODO metodo para contabilizar os votos
+        countVotes(agendaResponse);
 
         return agendaResponse;
+    }
+
+    private void countVotes(AgendaResponseDTO agendaResponse) {
+        List<Vote> votes = voteRepository.findAllByAgendaId(agendaResponse.getId());
+        agendaResponse.setNegativeVotes(votes.stream()
+                .filter(vote -> vote.getChoice().equals(NEGATIVE_VOTE)).count());
+        agendaResponse.setPositiveVotes(votes.stream()
+                .filter(vote -> vote.getChoice().equals(POSITIVE_VOTE)).count());
     }
 
     @Override
@@ -66,7 +77,7 @@ public class AgendaServiceImpl implements AgendaService {
     }
 
     @Override
-    public Vote voteAgenda(String agendaId, VoteRequestDTO voteRequest) {
+    public VoteResponseDTO voteAgenda(String agendaId, VoteRequestDTO voteRequest) {
         Agenda agenda = verifyIfAgendaExist(agendaId);
 
         verifyIfAgendaIsOpen(agenda);
@@ -74,14 +85,17 @@ public class AgendaServiceImpl implements AgendaService {
         //TODO verify if associate is able to vote by checking the cpf with the validator provided on the challenge description [Tarefa bonus 1]
         // suggested method name "validateAssociate(String associateCPF)"
 
-        //TODO Use object mapper
+
         Vote vote = Vote.builder()
                 .agendaId(agendaId)
                 .associate(voteRequest.getAssociate())
                 .choice(voteRequest.getChoice())
                 .build();
 
-        return registerVote(vote);
+        registerVote(vote);
+
+
+        return getVoteResponse(vote);
     }
 
     private void verifyIfAgendaIsOpen(Agenda agenda) {
@@ -110,7 +124,7 @@ public class AgendaServiceImpl implements AgendaService {
             vote = voteRepository.insert(vote);
         } catch (DuplicateKeyException e) {
             logger.error("AgendaServiceImpl.registerVote - Error - Vote already exists " +
-                    "- Associate: {}, Choice: {}", vote.getAssociate(), vote.getChoice());
+                    "- Associate: {}, Agenda identifier: {}", vote.getAssociate(), vote.getAgendaId());
             throw new VoteAlreadyExistsException();
         }
         return vote;

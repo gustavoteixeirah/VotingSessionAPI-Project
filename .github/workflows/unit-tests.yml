@@ -26,7 +26,7 @@ jobs:
 
   notifySlack:
     runs-on: ubuntu-18.04
-    needs: [heroku]
+    needs: [test]
 
     steps:
       - name: Notify slack
@@ -39,7 +39,7 @@ jobs:
 
   notifySlackIfFailure:
     runs-on: ubuntu-18.04
-    needs: [heroku]
+    needs: [test]
     if: failure()
 
     steps:

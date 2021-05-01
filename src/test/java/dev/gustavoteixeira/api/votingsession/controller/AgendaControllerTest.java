@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.gustavoteixeira.api.votingsession.dto.request.AgendaRequestDTO;
+import dev.gustavoteixeira.api.votingsession.entity.Agenda;
 import dev.gustavoteixeira.api.votingsession.exception.AgendaAlreadyExistsException;
 import dev.gustavoteixeira.api.votingsession.service.AgendaService;
 import org.junit.jupiter.api.Test;
@@ -16,9 +17,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,11 +36,14 @@ public class AgendaControllerTest {
     private AgendaService agendaService;
 
     @Test
-    public void creatingNewAgendaShouldReturnStatusOK() throws Exception {
+    public void creatingNewAgendaShouldReturnStatusCreated() throws Exception {
+
+        when(agendaService.createAgenda(any(AgendaRequestDTO.class))).thenReturn(getAgenda());
+
         mvc.perform(post("/agenda")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(getAgendaDTO()))
-        ).andExpect(status().isOk());
+                .content(mapToJson(getAgendaDTO())))
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -54,6 +60,15 @@ public class AgendaControllerTest {
         return AgendaRequestDTO.builder()
                 .name("Aumento no imposto da gasolina")
                 .duration(60)
+                .build();
+    }
+
+    private Agenda getAgenda() {
+        return Agenda.builder()
+                .id("asd123asd123da")
+                .name("Aumento no imposto da gasolina")
+                .duration(60)
+                .startTime(LocalDateTime.now())
                 .build();
     }
 

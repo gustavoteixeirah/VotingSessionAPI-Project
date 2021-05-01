@@ -18,20 +18,21 @@ public class AgendaServiceImpl implements AgendaService {
     private AgendaRepository agendaRepository;
 
     @Override
-    public void createAgenda(AgendaRequestDTO agendaRequest) {
-        try {
-            agendaRepository.insert(
-                    Agenda.builder()
-                            .name(agendaRequest.getName())
-                            .duration(agendaRequest.getDuration())
-                            .startTime(LocalDateTime.now())
-                            .build());
+    public Agenda createAgenda(AgendaRequestDTO agendaRequest) {
 
+        Agenda agenda = Agenda.builder()
+                .name(agendaRequest.getName())
+                .duration(agendaRequest.getDuration())
+                .startTime(LocalDateTime.now())
+                .build();
+
+        try {
+            agenda = agendaRepository.insert(agenda);
         } catch (DuplicateKeyException e) {
             throw new AgendaAlreadyExistsException();
         }
 
-
+        return agenda;
     }
 
 }

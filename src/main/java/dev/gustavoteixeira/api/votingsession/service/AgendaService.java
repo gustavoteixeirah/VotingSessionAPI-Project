@@ -1,9 +1,10 @@
 package dev.gustavoteixeira.api.votingsession.service;
 
 import dev.gustavoteixeira.api.votingsession.dto.request.AgendaRequestDTO;
+import dev.gustavoteixeira.api.votingsession.entity.Agenda;
 
 public interface AgendaService {
 
-    void createAgenda(AgendaRequestDTO agendaRequest);
+    Agenda createAgenda(AgendaRequestDTO agendaRequest);
 
 }

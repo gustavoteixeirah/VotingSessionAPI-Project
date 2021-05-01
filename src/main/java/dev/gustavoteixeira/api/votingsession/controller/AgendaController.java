@@ -4,7 +4,6 @@ import dev.gustavoteixeira.api.votingsession.dto.request.AgendaRequestDTO;
 import dev.gustavoteixeira.api.votingsession.dto.request.VoteRequestDTO;
 import dev.gustavoteixeira.api.votingsession.dto.response.AgendaResponseDTO;
 import dev.gustavoteixeira.api.votingsession.dto.response.VoteResponseDTO;
-import dev.gustavoteixeira.api.votingsession.entity.Vote;
 import dev.gustavoteixeira.api.votingsession.service.AgendaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,17 +60,10 @@ public class AgendaController {
 
     @PostMapping("/{agendaId}/vote")
     public ResponseEntity<VoteResponseDTO> voteAgenda(@PathVariable String agendaId, @RequestBody final VoteRequestDTO voteRequest) {
-//        logger.info("AgendaController.voteAgenda - Start - Agenda: {}", agendaRequest);
+        logger.info("AgendaController.voteAgenda - Start - Agenda identifier: {}", agendaId);
 
         VoteResponseDTO vote = agendaService.voteAgenda(agendaId, voteRequest);
 
-//        URI location = ServletUriComponentsBuilder
-//                .fromCurrentRequest()
-//                .path("/{id}")
-//                .buildAndExpand(agenda.getId())
-//                .toUri();
-
-//        logger.debug("AgendaController.voteAgenda - End - Agenda identifier: {}", agenda.getId());
         return ResponseEntity.ok(vote);
     }
 

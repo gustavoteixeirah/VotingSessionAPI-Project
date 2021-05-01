@@ -78,13 +78,14 @@ public class AgendaServiceImpl implements AgendaService {
 
     @Override
     public VoteResponseDTO voteAgenda(String agendaId, VoteRequestDTO voteRequest) {
+        //TODO verify if associate is able to vote by checking the cpf with the validator provided on the challenge description [Tarefa bonus 1]
+        // suggested method name "validateAssociate(String associateCPF)"
+
         Agenda agenda = verifyIfAgendaExist(agendaId);
 
         verifyIfAgendaIsOpen(agenda);
 
-        //TODO verify if associate is able to vote by checking the cpf with the validator provided on the challenge description [Tarefa bonus 1]
-        // suggested method name "validateAssociate(String associateCPF)"
-
+        verifyIfAssociateAlreadyVoted(agendaId, voteRequest);
 
         Vote vote = Vote.builder()
                 .agendaId(agendaId)
@@ -92,10 +93,15 @@ public class AgendaServiceImpl implements AgendaService {
                 .choice(voteRequest.getChoice())
                 .build();
 
-        registerVote(vote);
-
+        vote = registerVote(vote);
 
         return getVoteResponse(vote);
+    }
+
+    private void verifyIfAssociateAlreadyVoted(String agendaId, VoteRequestDTO voteRequest) {
+        if (voteRepository.findByAssociateAndAgendaId(voteRequest.getAssociate(), agendaId) != null) {
+            throw new VoteAlreadyExistsException();
+        }
     }
 
     private void verifyIfAgendaIsOpen(Agenda agenda) {

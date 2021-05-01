@@ -29,6 +29,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class AgendaControllerTest {
 
+    public static final String AGENDA_ID = "608d817df3117478ca0f7432";
+    public static final String AGENDA_NAME = "Aumento no imposto da gasolina";
+    public static final int AGENDA_DURATION = 60;
+
     @Autowired
     private MockMvc mvc;
 
@@ -58,16 +62,16 @@ public class AgendaControllerTest {
 
     private AgendaRequestDTO getAgendaDTO() {
         return AgendaRequestDTO.builder()
-                .name("Aumento no imposto da gasolina")
-                .duration(60)
+                .name(AGENDA_NAME)
+                .duration(AGENDA_DURATION)
                 .build();
     }
 
     private Agenda getAgenda() {
         return Agenda.builder()
-                .id("asd123asd123da")
-                .name("Aumento no imposto da gasolina")
-                .duration(60)
+                .id(AGENDA_ID)
+                .name(AGENDA_NAME)
+                .duration(AGENDA_DURATION)
                 .startTime(LocalDateTime.now())
                 .build();
     }

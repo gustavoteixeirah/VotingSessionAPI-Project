@@ -1,16 +1,14 @@
 package dev.gustavoteixeira.api.votingsession.controller;
 
 import dev.gustavoteixeira.api.votingsession.dto.request.AgendaRequestDTO;
-import dev.gustavoteixeira.api.votingsession.entity.Agenda;
+import dev.gustavoteixeira.api.votingsession.dto.request.VoteRequestDTO;
+import dev.gustavoteixeira.api.votingsession.dto.response.AgendaResponseDTO;
 import dev.gustavoteixeira.api.votingsession.service.AgendaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -26,9 +24,10 @@ public class AgendaController {
     private AgendaService agendaService;
 
     @PostMapping
-    public ResponseEntity<?> createAgenda(@RequestBody final AgendaRequestDTO agendaRequest) {
+    public ResponseEntity<Void> createAgenda(@RequestBody final AgendaRequestDTO agendaRequest) {
+        logger.info("AgendaController.createAgenda - Start - Agenda: {}", agendaRequest);
 
-        Agenda agenda = agendaService.createAgenda(agendaRequest);
+        var agenda = agendaService.createAgenda(agendaRequest);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -36,7 +35,43 @@ public class AgendaController {
                 .buildAndExpand(agenda.getId())
                 .toUri();
 
+        logger.debug("AgendaController.createAgenda - End - Agenda identifier: {}", agenda.getId());
         return ResponseEntity.created(location).build();
     }
+
+    @GetMapping("/{agendaId}")
+    public ResponseEntity<AgendaResponseDTO> getAgenda(@PathVariable String agendaId) {
+        logger.info("AgendaController.getAgenda - Start - Agenda identifier: {}", agendaId);
+
+        AgendaResponseDTO agenda = agendaService.getAgenda(agendaId);
+
+        return ResponseEntity.ok(agenda);
+    }
+
+    @PatchMapping("/{agendaId}/start")
+    public ResponseEntity<Void> startAgenda(@PathVariable String agendaId) {
+        logger.info("AgendaController.startAgenda - Start - Agenda identifier: {}", agendaId);
+
+        agendaService.startAgenda(agendaId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{agendaId}/vote")
+    public ResponseEntity<Void> voteAgenda(@PathVariable String agendaId, @RequestBody final VoteRequestDTO voteRequest) {
+//        logger.info("AgendaController.voteAgenda - Start - Agenda: {}", agendaRequest);
+
+        agendaService.voteAgenda(agendaId, voteRequest);
+
+//        URI location = ServletUriComponentsBuilder
+//                .fromCurrentRequest()
+//                .path("/{id}")
+//                .buildAndExpand(agenda.getId())
+//                .toUri();
+
+//        logger.debug("AgendaController.voteAgenda - End - Agenda identifier: {}", agenda.getId());
+        return ResponseEntity.ok().build();
+    }
+
 
 }

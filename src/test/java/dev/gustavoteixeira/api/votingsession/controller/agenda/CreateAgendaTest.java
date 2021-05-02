@@ -6,7 +6,6 @@ import dev.gustavoteixeira.api.votingsession.dto.request.AgendaRequestDTO;
 import dev.gustavoteixeira.api.votingsession.entity.Agenda;
 import dev.gustavoteixeira.api.votingsession.exception.AgendaAlreadyExistsException;
 import dev.gustavoteixeira.api.votingsession.service.AgendaService;
-import org.assertj.core.internal.Numbers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

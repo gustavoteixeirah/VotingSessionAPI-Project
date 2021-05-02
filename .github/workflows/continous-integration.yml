@@ -21,6 +21,7 @@ jobs:
       - name: Maven Package
         run: mvn -B clean package -DskipTests
 
+
   sonarcloud:
     name: Code Quality
     runs-on: ubuntu-latest
@@ -38,10 +39,26 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+
+  heroku:
+    name: Deploy to Heroku
+    runs-on: ubuntu-18.04
+    needs: [test]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy to Heroku
+        uses: AkhileshNS/heroku-deploy@v3.8.8
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
+          heroku_app_name: ${{secrets.HEROKU_APP}}
+
+
   notifySlack:
     name: Notificar Slack Sucesso
     runs-on: ubuntu-18.04
-    needs: [sonarcloud]
+    needs: [heroku]
 
     steps:
       - name: Notify slack
@@ -55,7 +72,7 @@ jobs:
   notifySlackIfFailure:
     name: Notificar Slack Falha
     runs-on: ubuntu-18.04
-    needs: [sonarcloud]
+    needs: [heroku]
     if: failure()
 
     steps:

@@ -123,6 +123,10 @@ paths:
           description: 'Bad Request'
           schema:
             example: 'Um ou mais parâmetros da requisição são inválidos.'
+        '403':
+          description: 'Forbidden'
+          schema:
+            example: 'O associado não está apto a votar.'
         '404':
           description: 'Not Found'
           schema:

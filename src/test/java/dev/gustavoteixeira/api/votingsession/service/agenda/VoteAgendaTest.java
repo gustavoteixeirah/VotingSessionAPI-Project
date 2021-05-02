@@ -1,10 +1,12 @@
 package dev.gustavoteixeira.api.votingsession.service.agenda;
 
+import dev.gustavoteixeira.api.votingsession.clients.AssociateValidatorClient;
+import dev.gustavoteixeira.api.votingsession.dto.AssociateVotingStatusDTO;
 import dev.gustavoteixeira.api.votingsession.dto.request.VoteRequestDTO;
-import dev.gustavoteixeira.api.votingsession.dto.response.VoteResponseDTO;
 import dev.gustavoteixeira.api.votingsession.entity.Agenda;
 import dev.gustavoteixeira.api.votingsession.entity.Vote;
 import dev.gustavoteixeira.api.votingsession.exception.AgendaClosedException;
+import dev.gustavoteixeira.api.votingsession.exception.AssociateIsNotAbleToVoteException;
 import dev.gustavoteixeira.api.votingsession.exception.VoteAlreadyExistsException;
 import dev.gustavoteixeira.api.votingsession.repository.AgendaRepository;
 import dev.gustavoteixeira.api.votingsession.repository.VoteRepository;
@@ -30,6 +32,10 @@ class VoteAgendaTest {
     public static final int AGENDA_DURATION = 10;
     public static final String ASSOCIATE_IDENTIFIER = "38347541027";
     public static final String POSITIVE_CHOICE = "SIM";
+    public static final String ABLE_TO_VOTE = "ABLE_TO_VOTE";
+    public static final String UNABLE_TO_VOTE = "UNABLE_TO_VOTE";
+    public static final AssociateVotingStatusDTO ASSOCIATE_VOTING_STATUS_ABLE = AssociateVotingStatusDTO.builder().status(ABLE_TO_VOTE).build();
+    public static final AssociateVotingStatusDTO ASSOCIATE_VOTING_STATUS_NOT_ABLE = AssociateVotingStatusDTO.builder().status(UNABLE_TO_VOTE).build();
 
     @Autowired
     private AgendaService agendaService;
@@ -39,6 +45,9 @@ class VoteAgendaTest {
 
     @MockBean
     private VoteRepository voteRepository;
+
+    @MockBean
+    private AssociateValidatorClient associateValidatorClient;
 
     @Test
     void voteInAgendaThatIsOpenShouldRegisterVote() {
@@ -53,6 +62,7 @@ class VoteAgendaTest {
         agenda.setStartTime(LocalDateTime.now().minusMinutes(5));
         Optional<Agenda> agendaOptional = Optional.of(agenda);
 
+        when(associateValidatorClient.getAssociateVotingStatus(anyString())).thenReturn(ASSOCIATE_VOTING_STATUS_ABLE);
         when(agendaRepository.findById(AGENDA_ID)).thenReturn(agendaOptional);
         when(voteRepository.findByAssociateAndAgendaId(ASSOCIATE_IDENTIFIER, AGENDA_ID))
                 .thenReturn(null);
@@ -73,6 +83,7 @@ class VoteAgendaTest {
         Agenda agenda = getAgenda();
         Optional<Agenda> agendaOptional = Optional.of(agenda);
 
+        when(associateValidatorClient.getAssociateVotingStatus(anyString())).thenReturn(ASSOCIATE_VOTING_STATUS_ABLE);
         when(agendaRepository.findById(AGENDA_ID)).thenReturn(agendaOptional);
 
         RuntimeException exception = Assertions.assertThrows(AgendaClosedException.class,
@@ -91,6 +102,7 @@ class VoteAgendaTest {
         agenda.setStartTime(LocalDateTime.now().minusMinutes(5));
         Optional<Agenda> agendaOptional = Optional.of(agenda);
 
+        when(associateValidatorClient.getAssociateVotingStatus(anyString())).thenReturn(ASSOCIATE_VOTING_STATUS_ABLE);
         when(agendaRepository.findById(AGENDA_ID)).thenReturn(agendaOptional);
         when(voteRepository.findByAssociateAndAgendaId(ASSOCIATE_IDENTIFIER, AGENDA_ID))
                 .thenReturn(Vote.builder().build());
@@ -99,6 +111,20 @@ class VoteAgendaTest {
                 () -> agendaService.voteAgenda(AGENDA_ID, voteRequest));
 
         assertThat(exception).isInstanceOf(VoteAlreadyExistsException.class);
+    }
+
+    @Test
+    void voteInAgendaWithUnableAssociateShouldReturnAssociateIsNotAbleToVoteException() {
+        VoteRequestDTO voteRequest = VoteRequestDTO.builder()
+                .associate(ASSOCIATE_IDENTIFIER)
+                .choice(POSITIVE_CHOICE).build();
+
+        when(associateValidatorClient.getAssociateVotingStatus(anyString())).thenReturn(ASSOCIATE_VOTING_STATUS_NOT_ABLE);
+
+        RuntimeException exception = Assertions.assertThrows(AssociateIsNotAbleToVoteException.class,
+                () -> agendaService.voteAgenda(AGENDA_ID, voteRequest));
+
+        assertThat(exception).isInstanceOf(AssociateIsNotAbleToVoteException.class);
     }
 
     private Agenda getAgenda() {

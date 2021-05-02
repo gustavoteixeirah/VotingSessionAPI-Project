@@ -61,4 +61,11 @@ public class ControllerAdviceExceptionHandler extends ResponseEntityExceptionHan
                 .status(HttpStatus.BAD_REQUEST).body("Um ou mais parâmetros da requisição são inválidos.");
     }
 
+    @ExceptionHandler(value
+            = {AssociateIsNotAbleToVoteException.class})
+    public ResponseEntity<String> handleAssociateIsNotAbleToVoteException(AssociateIsNotAbleToVoteException e, WebRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN).body("O associado não está apto a votar.");
+    }
+
 }

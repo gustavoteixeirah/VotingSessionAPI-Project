@@ -1,5 +1,6 @@
 package dev.gustavoteixeira.api.votingsession.service.impl;
 
+import dev.gustavoteixeira.api.votingsession.clients.AssociateValidatorClient;
 import dev.gustavoteixeira.api.votingsession.dto.request.AgendaRequestDTO;
 import dev.gustavoteixeira.api.votingsession.dto.request.VoteRequestDTO;
 import dev.gustavoteixeira.api.votingsession.dto.response.AgendaResponseDTO;
@@ -35,6 +36,9 @@ public class AgendaServiceImpl implements AgendaService {
 
     @Autowired
     private VoteRepository voteRepository;
+
+    @Autowired
+    private AssociateValidatorClient associateValidatorClient;
 
     @Override
     public Agenda createAgenda(AgendaRequestDTO agendaRequest) {
@@ -75,6 +79,8 @@ public class AgendaServiceImpl implements AgendaService {
     public void voteAgenda(String agendaId, VoteRequestDTO voteRequest) {
         logger.info("AgendaServiceImpl.voteAgenda - Start - Agenda identifier: {}, Associate: {}", agendaId, voteRequest.getAssociate());
 
+        verifyIfAssociateIsAbleToVote(voteRequest);
+
         var agenda = verifyIfAgendaExist(agendaId);
 
         verifyIfAgendaIsOpen(agenda);
@@ -87,6 +93,15 @@ public class AgendaServiceImpl implements AgendaService {
                 .build();
 
         registerVote(vote);
+    }
+
+    private void verifyIfAssociateIsAbleToVote(VoteRequestDTO voteRequest) {
+        var associateVotingStatus = associateValidatorClient.getAssociateVotingStatus(voteRequest.getAssociate());
+        if (!associateVotingStatus.getStatus().equals("ABLE_TO_VOTE")) {
+            logger.error("AgendaServiceImpl.voteAgenda - Error - Associate is not able to vote. " +
+                    "- Associate identifier: {}", voteRequest.getAssociate());
+            throw new AssociateIsNotAbleToVoteException();
+        }
     }
 
     private int getDuration(AgendaRequestDTO agendaRequest) {

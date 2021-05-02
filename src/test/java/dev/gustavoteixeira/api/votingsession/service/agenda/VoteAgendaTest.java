@@ -59,13 +59,9 @@ class VoteAgendaTest {
         when(voteRepository.insert(any(Vote.class)))
                 .thenReturn(vote);
 
-        VoteResponseDTO result = agendaService.voteAgenda(AGENDA_ID, voteRequest);
+        agendaService.voteAgenda(AGENDA_ID, voteRequest);
 
-        assertThat(result).isNotNull();
         verify(voteRepository, times(1)).insert(any(Vote.class));
-        assertThat(result.getAgendaId()).isEqualTo(AGENDA_ID);
-        assertThat(result.getAssociate()).isEqualTo(ASSOCIATE_IDENTIFIER);
-        assertThat(result.getChoice()).isEqualTo(POSITIVE_CHOICE);
     }
 
     @Test

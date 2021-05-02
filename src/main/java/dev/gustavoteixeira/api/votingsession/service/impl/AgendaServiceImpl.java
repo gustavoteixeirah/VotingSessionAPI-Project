@@ -78,7 +78,7 @@ public class AgendaServiceImpl implements AgendaService {
     }
 
     @Override
-    public VoteResponseDTO voteAgenda(String agendaId, VoteRequestDTO voteRequest) {
+    public void voteAgenda(String agendaId, VoteRequestDTO voteRequest) {
         logger.info("AgendaServiceImpl.voteAgenda - Start - Agenda identifier: {}, Associate: {}", agendaId, voteRequest.getAssociate());
 
         var agenda = verifyIfAgendaExist(agendaId);
@@ -92,9 +92,7 @@ public class AgendaServiceImpl implements AgendaService {
                 .choice(voteRequest.getChoice())
                 .build();
 
-        vote = registerVote(vote);
-
-        return getVoteResponse(vote);
+        registerVote(vote);
     }
 
     private void countVotes(AgendaResponseDTO agendaResponse) {
@@ -153,8 +151,8 @@ public class AgendaServiceImpl implements AgendaService {
         return agenda;
     }
 
-    private Vote registerVote(Vote vote) {
-        return voteRepository.insert(vote);
+    private void registerVote(Vote vote) {
+        voteRepository.insert(vote);
     }
 
     private Agenda verifyIfAgendaExist(String agendaId) {

@@ -14,5 +14,5 @@ public interface AgendaService {
 
     void startAgenda(String agendaId);
 
-    VoteResponseDTO voteAgenda(String agendaId, VoteRequestDTO voteRequest);
+    void voteAgenda(String agendaId, VoteRequestDTO voteRequest);
 }

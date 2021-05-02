@@ -9,7 +9,7 @@ import static dev.gustavoteixeira.api.votingsession.converter.VoteConverter.getV
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class VoteConverterTest {
+class VoteConverterTest {
 
     public static final String AGENDA_ID = "608d817df3117478ca0f7432";
     public static final String ASSOCIATE_IDENTIFIER = "38347541027";

@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-public class VoteAgendaTest {
+class VoteAgendaTest {
 
     public static final String AGENDA_ID = "608d817df3117478ca0f7432";
     public static final String NONEXISTENT_AGENDA_ID = "608ded0cc66aaf5bd61759de";

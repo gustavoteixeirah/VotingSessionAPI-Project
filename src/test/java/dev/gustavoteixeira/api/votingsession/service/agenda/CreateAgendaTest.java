@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-public class CreateAgendaTest {
+class CreateAgendaTest {
 
     @Autowired
     private AgendaService agendaService;

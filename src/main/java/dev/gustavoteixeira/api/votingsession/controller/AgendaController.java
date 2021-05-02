@@ -30,7 +30,7 @@ public class AgendaController {
 
         var agenda = agendaService.createAgenda(agendaRequest);
 
-        URI location = ServletUriComponentsBuilder
+        var location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(agenda.getId())
@@ -44,7 +44,7 @@ public class AgendaController {
     public ResponseEntity<AgendaResponseDTO> getAgenda(@PathVariable String agendaId) {
         logger.info("AgendaController.getAgenda - Start - Agenda identifier: {}", agendaId);
 
-        AgendaResponseDTO agenda = agendaService.getAgenda(agendaId);
+        var agenda = agendaService.getAgenda(agendaId);
 
         return ResponseEntity.ok(agenda);
     }
@@ -62,7 +62,7 @@ public class AgendaController {
     public ResponseEntity<VoteResponseDTO> voteAgenda(@PathVariable String agendaId, @RequestBody final VoteRequestDTO voteRequest) {
         logger.info("AgendaController.voteAgenda - Start - Agenda identifier: {}", agendaId);
 
-        VoteResponseDTO vote = agendaService.voteAgenda(agendaId, voteRequest);
+        var vote = agendaService.voteAgenda(agendaId, voteRequest);
 
         return ResponseEntity.ok(vote);
     }

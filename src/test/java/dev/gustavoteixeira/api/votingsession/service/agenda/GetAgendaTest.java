@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class GetAgendaTest {
+class GetAgendaTest {
 
     public static final String AGENDA_ID = "608d817df3117478ca0f7432";
     public static final String NONEXISTENT_AGENDA_ID = "608ded0cc66aaf5bd61759de";
@@ -86,7 +86,7 @@ public class GetAgendaTest {
         agenda.setStartTime(LocalDateTime.now().minusMinutes(5));
         Optional<Agenda> agendaOptional = Optional.of(agenda);
 
-        when(agendaRepository.findById(eq(AGENDA_ID))).thenReturn(agendaOptional);
+        when(agendaRepository.findById(AGENDA_ID)).thenReturn(agendaOptional);
         when(voteRepository.findAllByAgendaId(AGENDA_ID)).thenReturn(getVoteList());
 
         AgendaResponseDTO result = agendaService.getAgenda(AGENDA_ID);
@@ -107,7 +107,7 @@ public class GetAgendaTest {
         agenda.setStartTime(LocalDateTime.now().minusMinutes(10));
         Optional<Agenda> agendaOptional = Optional.of(agenda);
 
-        when(agendaRepository.findById(eq(AGENDA_ID))).thenReturn(agendaOptional);
+        when(agendaRepository.findById(AGENDA_ID)).thenReturn(agendaOptional);
         when(voteRepository.findAllByAgendaId(AGENDA_ID)).thenReturn(getVoteList());
 
         AgendaResponseDTO result = agendaService.getAgenda(AGENDA_ID);

@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class GetAgendaTest {
+class GetAgendaTest {
     public static final String AGENDA_ID = "608d817df3117478ca0f7432";
     public static final String NONEXISTENT_AGENDA_ID = "608ded0cc66aaf5bd61759de";
     public static final String AGENDA_NAME = "Rising gasoline tax by 3%";

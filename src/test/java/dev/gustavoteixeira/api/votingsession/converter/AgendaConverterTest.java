@@ -18,7 +18,7 @@ public class AgendaConverterTest {
     public static final int AGENDA_DURATION = 2;
 
     @Test
-    public void getAgendaResponseWithNewlyCreatedShouldReturnAgendaResponseDTO() {
+    void getAgendaResponseWithNewlyCreatedShouldReturnAgendaResponseDTO() {
         Agenda agenda = Agenda.builder()
                 .id(AGENDA_ID)
                 .name(AGENDA_NAME)

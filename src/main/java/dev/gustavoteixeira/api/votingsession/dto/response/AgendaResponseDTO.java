@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class AgendaResponseDTO {
 

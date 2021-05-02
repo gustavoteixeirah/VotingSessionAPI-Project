@@ -4,9 +4,13 @@ import dev.gustavoteixeira.api.votingsession.dto.request.VoteRequestDTO;
 import dev.gustavoteixeira.api.votingsession.dto.response.VoteResponseDTO;
 import dev.gustavoteixeira.api.votingsession.entity.Agenda;
 import dev.gustavoteixeira.api.votingsession.entity.Vote;
+import dev.gustavoteixeira.api.votingsession.exception.AgendaClosedException;
+import dev.gustavoteixeira.api.votingsession.exception.AgendaNotFoundException;
+import dev.gustavoteixeira.api.votingsession.exception.VoteAlreadyExistsException;
 import dev.gustavoteixeira.api.votingsession.repository.AgendaRepository;
 import dev.gustavoteixeira.api.votingsession.repository.VoteRepository;
 import dev.gustavoteixeira.api.votingsession.service.AgendaService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,7 +47,7 @@ class VoteAgendaTest {
     private VoteRepository voteRepository;
 
     @Test
-    void startAgendaWithValidAgendaIdShouldUpdateTheAgendaStartTime() {
+    void voteInAgendaThatIsOpenShouldRegisterVote() {
         VoteRequestDTO voteRequest = VoteRequestDTO.builder()
                 .associate(ASSOCIATE_IDENTIFIER_1)
                 .choice(POSITIVE_CHOICE).build();
@@ -68,6 +72,43 @@ class VoteAgendaTest {
         assertThat(result.getAgendaId()).isEqualTo(AGENDA_ID);
         assertThat(result.getAssociate()).isEqualTo(ASSOCIATE_IDENTIFIER_1);
         assertThat(result.getChoice()).isEqualTo(POSITIVE_CHOICE);
+    }
+
+    @Test
+    void voteInAgendaThatIsClosedShouldReturnAgendaClosedException() {
+        VoteRequestDTO voteRequest = VoteRequestDTO.builder()
+                .associate(ASSOCIATE_IDENTIFIER_1)
+                .choice(POSITIVE_CHOICE).build();
+
+        Agenda agenda = getAgenda();
+        Optional<Agenda> agendaOptional = Optional.of(agenda);
+
+        when(agendaRepository.findById(AGENDA_ID)).thenReturn(agendaOptional);
+
+        RuntimeException exception = Assertions.assertThrows(AgendaClosedException.class,
+                () -> agendaService.voteAgenda(AGENDA_ID, voteRequest));
+
+        assertThat(exception).isInstanceOf(AgendaClosedException.class);
+    }
+
+    @Test
+    void voteInAgendaThatHasAlreadyVotedShouldReturnVoteAlreadyExistsException() {
+        VoteRequestDTO voteRequest = VoteRequestDTO.builder()
+                .associate(ASSOCIATE_IDENTIFIER_1)
+                .choice(POSITIVE_CHOICE).build();
+
+        Agenda agenda = getAgenda();
+        agenda.setStartTime(LocalDateTime.now().minusMinutes(5));
+        Optional<Agenda> agendaOptional = Optional.of(agenda);
+
+        when(agendaRepository.findById(AGENDA_ID)).thenReturn(agendaOptional);
+        when(voteRepository.findByAssociateAndAgendaId(ASSOCIATE_IDENTIFIER_1, AGENDA_ID))
+                .thenReturn(Vote.builder().build());
+
+        RuntimeException exception = Assertions.assertThrows(VoteAlreadyExistsException.class,
+                () -> agendaService.voteAgenda(AGENDA_ID, voteRequest));
+
+        assertThat(exception).isInstanceOf(VoteAlreadyExistsException.class);
     }
 
     private Agenda getAgenda() {

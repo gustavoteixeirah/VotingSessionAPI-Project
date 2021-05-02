@@ -135,14 +135,7 @@ public class AgendaServiceImpl implements AgendaService {
     }
 
     private Vote registerVote(Vote vote) {
-        try {
-            vote = voteRepository.insert(vote);
-        } catch (DuplicateKeyException e) {
-            logger.error("AgendaServiceImpl.registerVote - Error - Vote already exists " +
-                    "- Associate: {}, Agenda identifier: {}", vote.getAssociate(), vote.getAgendaId());
-            throw new VoteAlreadyExistsException();
-        }
-        return vote;
+        return voteRepository.insert(vote);
     }
 
     private Agenda verifyIfAgendaExist(String agendaId) {

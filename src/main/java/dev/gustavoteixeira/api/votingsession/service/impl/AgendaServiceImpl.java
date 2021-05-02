@@ -40,7 +40,7 @@ public class AgendaServiceImpl implements AgendaService {
 
     @Override
     public Agenda createAgenda(AgendaRequestDTO agendaRequest) {
-
+        logger.info("AgendaServiceImpl.createAgenda - Start - Agenda name: {}", agendaRequest.getName());
         var agenda = Agenda.builder()
                 .name(agendaRequest.getName())
                 .duration(getDuration(agendaRequest))
@@ -55,6 +55,7 @@ public class AgendaServiceImpl implements AgendaService {
 
     @Override
     public AgendaResponseDTO getAgenda(String agendaId) {
+        logger.info("AgendaServiceImpl.getAgenda - Start - Agenda identifier: {}", agendaId);
         var agenda = verifyIfAgendaExist(agendaId);
 
         AgendaResponseDTO agendaResponse = getAgendaResponse(agenda);
@@ -64,38 +65,21 @@ public class AgendaServiceImpl implements AgendaService {
         return agendaResponse;
     }
 
-    private void countVotes(AgendaResponseDTO agendaResponse) {
-        List<Vote> votes = voteRepository.findAllByAgendaId(agendaResponse.getId());
-        agendaResponse.setNegativeVotes(votes.stream()
-                .filter(vote -> vote.getChoice().equals(NEGATIVE_VOTE)).count());
-        agendaResponse.setPositiveVotes(votes.stream()
-                .filter(vote -> vote.getChoice().equals(POSITIVE_VOTE)).count());
-    }
-
     @Override
     public void startAgenda(String agendaId) {
+        logger.info("AgendaServiceImpl.startAgenda - Start - Agenda identifier: {}", agendaId);
+
         var agenda = verifyIfAgendaExist(agendaId);
         verifyIfAgendaIsAlreadyOpen(agenda);
-        verifyIfAgendaIsClose(agenda);
+        verifyIfAgendaIsClosed(agenda);
+
         agenda.setStartTime(LocalDateTime.now());
         agendaRepository.save(agenda);
     }
 
-    private void verifyIfAgendaIsClose(Agenda agenda) {
-        if (!agendaIsOpen(agenda) && agenda.getStartTime() != null) {
-            throw new AgendaHasAlreadyBeenClosedException();
-        }
-    }
-
-    private void verifyIfAgendaIsAlreadyOpen(Agenda agenda) {
-        if (agendaIsOpen(agenda)) {
-            throw new AgendaIsAlreadyOpenException();
-        }
-    }
-
     @Override
     public VoteResponseDTO voteAgenda(String agendaId, VoteRequestDTO voteRequest) {
-        //TODO verify if associate is able to vote by checking the cpf with the validator provided on the challenge description [Tarefa bonus 1]
+        logger.info("AgendaServiceImpl.voteAgenda - Start - Agenda identifier: {}, Associate: {}", agendaId, voteRequest.getAssociate());
 
         var agenda = verifyIfAgendaExist(agendaId);
 
@@ -113,14 +97,42 @@ public class AgendaServiceImpl implements AgendaService {
         return getVoteResponse(vote);
     }
 
+    private void countVotes(AgendaResponseDTO agendaResponse) {
+        List<Vote> votes = voteRepository.findAllByAgendaId(agendaResponse.getId());
+        agendaResponse.setNegativeVotes(votes.stream()
+                .filter(vote -> vote.getChoice().equals(NEGATIVE_VOTE)).count());
+        agendaResponse.setPositiveVotes(votes.stream()
+                .filter(vote -> vote.getChoice().equals(POSITIVE_VOTE)).count());
+    }
+
+    private void verifyIfAgendaIsClosed(Agenda agenda) {
+        if (!agendaIsOpen(agenda) && agenda.getStartTime() != null) {
+            logger.error("AgendaServiceImpl.verifyIfAgendaIsClosed - Error - Agenda has already been closed " +
+                    "- Agenda identifier: {}", agenda.getId());
+            throw new AgendaHasAlreadyBeenClosedException();
+        }
+    }
+
+    private void verifyIfAgendaIsAlreadyOpen(Agenda agenda) {
+        if (agendaIsOpen(agenda)) {
+            logger.error("AgendaServiceImpl.verifyIfAgendaIsAlreadyOpen - Error - Agenda is already open " +
+                    "- Agenda identifier: {}", agenda.getId());
+            throw new AgendaIsAlreadyOpenException();
+        }
+    }
+
     private void verifyIfAssociateHaveNotVotedYet(String agendaId, VoteRequestDTO voteRequest) {
         if (voteRepository.findByAssociateAndAgendaId(voteRequest.getAssociate(), agendaId) != null) {
+            logger.error("AgendaServiceImpl.verifyIfAssociateHaveNotVotedYet - Error - Associate already voted " +
+                    "- Agenda identifier: {}, Associate identifier: {}", agendaId, voteRequest.getAssociate());
             throw new VoteAlreadyExistsException();
         }
     }
 
     private void verifyIfAgendaIsOpen(Agenda agenda) {
         if (!agendaIsOpen(agenda)) {
+            logger.error("AgendaServiceImpl.verifyIfAgendaIsOpen - Error - Agenda is closed " +
+                    "- Agenda identifier: {}", agenda.getId());
             throw new AgendaClosedException();
         }
     }
@@ -137,6 +149,7 @@ public class AgendaServiceImpl implements AgendaService {
                     "- Agenda name: {}", agenda.getName());
             throw new AgendaAlreadyExistsException();
         }
+        logger.debug("AgendaServiceImpl.registerAgenda - Saved agenda with success - Agenda name: {}, Agenda identifier: {}", agenda.getName(), agenda.getId());
         return agenda;
     }
 
@@ -146,7 +159,12 @@ public class AgendaServiceImpl implements AgendaService {
 
     private Agenda verifyIfAgendaExist(String agendaId) {
         Optional<Agenda> agendaOptional = agendaRepository.findById(agendaId);
-        return agendaOptional.orElseThrow(AgendaNotFoundException::new);
+
+        return agendaOptional.orElseThrow(() -> {
+            logger.error("AgendaServiceImpl.registerVote - Error - Agenda not found " +
+                    "- Agenda identifier: {}", agendaId);
+            throw new AgendaNotFoundException();
+        });
     }
 
 }

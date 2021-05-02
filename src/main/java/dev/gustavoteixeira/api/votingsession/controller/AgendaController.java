@@ -25,7 +25,7 @@ public class AgendaController {
 
     @PostMapping
     public ResponseEntity<Void> createAgenda(@Valid @RequestBody final AgendaRequestDTO agendaRequest) {
-        logger.info("AgendaController.createAgenda - Start - Agenda: {}", agendaRequest);
+        logger.info("AgendaController.createAgenda - Start - Agenda name: {}", agendaRequest.getName());
 
         var agenda = agendaService.createAgenda(agendaRequest);
 
@@ -35,7 +35,7 @@ public class AgendaController {
                 .buildAndExpand(agenda.getId())
                 .toUri();
 
-        logger.debug("AgendaController.createAgenda - End - Agenda identifier: {}", agenda.getId());
+        logger.debug("AgendaController.createAgenda - End - Agenda name: {}, Agenda identifier: {}", agenda.getName(), agenda.getId());
         return ResponseEntity.created(location).build();
     }
 
@@ -45,6 +45,7 @@ public class AgendaController {
 
         var agenda = agendaService.getAgenda(agendaId);
 
+        logger.debug("AgendaController.getAgenda - End - Agenda identifier: {}", agendaId);
         return ResponseEntity.ok(agenda);
     }
 
@@ -54,15 +55,17 @@ public class AgendaController {
 
         agendaService.startAgenda(agendaId);
 
+        logger.debug("AgendaController.startAgenda - End - Agenda identifier: {}", agendaId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{agendaId}/vote")
     public ResponseEntity<VoteResponseDTO> voteAgenda(@PathVariable String agendaId, @RequestBody final VoteRequestDTO voteRequest) {
-        logger.info("AgendaController.voteAgenda - Start - Agenda identifier: {}", agendaId);
+        logger.info("AgendaController.voteAgenda - Start - Agenda identifier: {}, Associate: {}", agendaId, voteRequest.getAssociate());
 
         var vote = agendaService.voteAgenda(agendaId, voteRequest);
 
+        logger.debug("AgendaController.voteAgenda - End - Agenda identifier: {}, Associate: {}", agendaId, voteRequest.getAssociate());
         return ResponseEntity.ok(vote);
     }
 

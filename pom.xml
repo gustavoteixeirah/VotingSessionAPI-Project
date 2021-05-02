@@ -12,7 +12,7 @@
     <artifactId>voting-session</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>voting-session</name>
-    <description>Essa é uma API para uma Sessão de Votação</description>
+    <description>Voting Session API</description>
     <properties>
         <java.version>11</java.version>
     </properties>

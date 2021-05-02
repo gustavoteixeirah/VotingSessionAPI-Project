@@ -20,8 +20,6 @@ jobs:
         run: mvn -B test
       - name: Maven Package
         run: mvn -B clean package -DskipTests
-      - name: Maven Verify
-        run: mvn -B clean verify
 
   notifySlack:
     runs-on: ubuntu-18.04

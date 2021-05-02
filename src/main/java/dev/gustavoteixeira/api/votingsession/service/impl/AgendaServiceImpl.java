@@ -3,7 +3,6 @@ package dev.gustavoteixeira.api.votingsession.service.impl;
 import dev.gustavoteixeira.api.votingsession.dto.request.AgendaRequestDTO;
 import dev.gustavoteixeira.api.votingsession.dto.request.VoteRequestDTO;
 import dev.gustavoteixeira.api.votingsession.dto.response.AgendaResponseDTO;
-import dev.gustavoteixeira.api.votingsession.dto.response.VoteResponseDTO;
 import dev.gustavoteixeira.api.votingsession.entity.Agenda;
 import dev.gustavoteixeira.api.votingsession.entity.Vote;
 import dev.gustavoteixeira.api.votingsession.exception.*;
@@ -21,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static dev.gustavoteixeira.api.votingsession.converter.AgendaConverter.getAgendaResponse;
-import static dev.gustavoteixeira.api.votingsession.converter.VoteConverter.getVoteResponse;
 
 @Service
 public class AgendaServiceImpl implements AgendaService {
@@ -47,10 +45,6 @@ public class AgendaServiceImpl implements AgendaService {
                 .build();
 
         return registerAgenda(agenda);
-    }
-
-    private int getDuration(AgendaRequestDTO agendaRequest) {
-        return agendaRequest.getDuration() <= 0 ? DEFAULT_DURATION : agendaRequest.getDuration();
     }
 
     @Override
@@ -93,6 +87,10 @@ public class AgendaServiceImpl implements AgendaService {
                 .build();
 
         registerVote(vote);
+    }
+
+    private int getDuration(AgendaRequestDTO agendaRequest) {
+        return agendaRequest.getDuration() <= 0 ? DEFAULT_DURATION : agendaRequest.getDuration();
     }
 
     private void countVotes(AgendaResponseDTO agendaResponse) {

@@ -3,7 +3,6 @@ package dev.gustavoteixeira.api.votingsession.controller;
 import dev.gustavoteixeira.api.votingsession.dto.request.AgendaRequestDTO;
 import dev.gustavoteixeira.api.votingsession.dto.request.VoteRequestDTO;
 import dev.gustavoteixeira.api.votingsession.dto.response.AgendaResponseDTO;
-import dev.gustavoteixeira.api.votingsession.dto.response.VoteResponseDTO;
 import dev.gustavoteixeira.api.votingsession.service.AgendaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

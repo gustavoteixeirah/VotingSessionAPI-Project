@@ -16,7 +16,7 @@ class VoteConverterTest {
     public static final String POSITIVE_CHOICE = "SIM";
 
     @Test
-    public void getAgendaResponseWithNewlyCreatedShouldReturnAgendaResponseDTO() {
+    void getAgendaResponseWithNewlyCreatedShouldReturnAgendaResponseDTO() {
         Vote vote = Vote.builder()
                 .agendaId(AGENDA_ID)
                 .associate(ASSOCIATE_IDENTIFIER)

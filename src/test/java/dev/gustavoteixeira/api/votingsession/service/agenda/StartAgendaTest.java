@@ -5,7 +5,6 @@ import dev.gustavoteixeira.api.votingsession.exception.AgendaHasAlreadyBeenClose
 import dev.gustavoteixeira.api.votingsession.exception.AgendaIsAlreadyOpenException;
 import dev.gustavoteixeira.api.votingsession.exception.AgendaNotFoundException;
 import dev.gustavoteixeira.api.votingsession.repository.AgendaRepository;
-import dev.gustavoteixeira.api.votingsession.repository.VoteRepository;
 import dev.gustavoteixeira.api.votingsession.service.AgendaService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest

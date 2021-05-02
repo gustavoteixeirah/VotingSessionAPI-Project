@@ -11,7 +11,7 @@ import static dev.gustavoteixeira.api.votingsession.converter.AgendaConverter.ge
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class AgendaConverterTest {
+class AgendaConverterTest {
 
     public static final String AGENDA_ID = "608d817df3117478ca0f7432";
     public static final String AGENDA_NAME = "Rising gasoline tax by 3%";
@@ -37,7 +37,7 @@ public class AgendaConverterTest {
     }
 
     @Test
-    public void getAgendaResponseWithAgendaVotingInProgressShouldReturnAgendaResponseDTO() {
+    void getAgendaResponseWithAgendaVotingInProgressShouldReturnAgendaResponseDTO() {
         Agenda agenda = Agenda.builder()
                 .id(AGENDA_ID)
                 .name(AGENDA_NAME)
@@ -57,7 +57,7 @@ public class AgendaConverterTest {
     }
 
     @Test
-    public void getAgendaResponseWithAlreadyVotedAgendaShouldReturnAgendaResponseDTO() {
+    void getAgendaResponseWithAlreadyVotedAgendaShouldReturnAgendaResponseDTO() {
         Agenda agenda = Agenda.builder()
                 .id(AGENDA_ID)
                 .name(AGENDA_NAME)

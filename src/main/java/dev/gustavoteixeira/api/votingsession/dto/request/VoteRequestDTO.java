@@ -11,6 +11,7 @@ import javax.validation.constraints.Pattern;
 @Builder
 public class VoteRequestDTO {
 
+    @Pattern(regexp = "[0-9]{11}")
     private String associate;
 
     @Pattern(regexp = "^(?:Sim|Não)$")

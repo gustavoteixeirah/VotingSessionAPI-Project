@@ -30,6 +30,7 @@ class VoteAgendaTest {
     public static final String AGENDA_ID = "608d817df3117478ca0f7432";
     public static final String NONEXISTENT_AGENDA_ID = "608ded0cc66aaf5bd61759de";
     public static final String ASSOCIATE_IDENTIFIER = "38347541027";
+    public static final String INVALID_ASSOCIATE_IDENTIFIER = "0123456789";
     public static final String POSITIVE_CHOICE = "Sim";
     public static final String NEGATIVE_CHOICE = "Não";
     public static final String INVALID_CHOICE = "Talvez";
@@ -43,7 +44,7 @@ class VoteAgendaTest {
     @Test
     void voteAgendaWithValidRequestShouldReturnOK() throws Exception {
         VoteRequestDTO requestBody = VoteRequestDTO.builder()
-                .associate("validCPF")
+                .associate(ASSOCIATE_IDENTIFIER)
                 .choice(POSITIVE_CHOICE).build();
 
         doNothing().when(agendaService).voteAgenda(eq(AGENDA_ID), any(VoteRequestDTO.class));
@@ -104,6 +105,18 @@ class VoteAgendaTest {
         VoteRequestDTO requestBody = VoteRequestDTO.builder()
                 .associate(ASSOCIATE_IDENTIFIER)
                 .choice(INVALID_CHOICE).build();
+
+        mvc.perform(post("/agenda/".concat(AGENDA_ID).concat("/vote"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapToJson(requestBody)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void voteAgendaWithInvalidAssociateIdentifierShouldReturnBadRequest() throws Exception {
+        VoteRequestDTO requestBody = VoteRequestDTO.builder()
+                .associate(INVALID_ASSOCIATE_IDENTIFIER)
+                .choice(POSITIVE_CHOICE).build();
 
         mvc.perform(post("/agenda/".concat(AGENDA_ID).concat("/vote"))
                 .contentType(MediaType.APPLICATION_JSON)

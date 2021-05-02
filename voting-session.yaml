@@ -196,7 +196,7 @@ definitions:
       associate:
         type: 'string'
         example: '25833899044'
-        description: 'Associate identifier (CPF).'
+        description: 'Associate identifier (CPF). Must contain only numbers.'
       choice:
         type: 'string'
         example: 'Sim ou Não'

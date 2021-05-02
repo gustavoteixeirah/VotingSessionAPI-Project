@@ -6,6 +6,7 @@ import dev.gustavoteixeira.api.votingsession.dto.request.AgendaRequestDTO;
 import dev.gustavoteixeira.api.votingsession.entity.Agenda;
 import dev.gustavoteixeira.api.votingsession.exception.AgendaAlreadyExistsException;
 import dev.gustavoteixeira.api.votingsession.service.AgendaService;
+import org.assertj.core.internal.Numbers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -29,6 +30,7 @@ class CreateAgendaTest {
     public static final String AGENDA_ID = "608d817df3117478ca0f7432";
     public static final String AGENDA_NAME = "Rising gasoline tax by 3%";
     public static final int AGENDA_DURATION = 60;
+    public static final int DEFAULT_DURATION = 1;
 
     @Autowired
     private MockMvc mvc;
@@ -102,7 +104,14 @@ class CreateAgendaTest {
     }
 
     @Test
-    void creatingNewAgendaWithNegativeDurationShouldReturnStatusBadRequest() throws Exception {
+    void creatingNewAgendaWithNegativeDurationShouldReturnStatusCreated() throws Exception {
+        Agenda agenda = Agenda.builder()
+                .id(AGENDA_ID)
+                .name(AGENDA_NAME)
+                .duration(DEFAULT_DURATION).build();
+
+        when(agendaService.createAgenda(any(AgendaRequestDTO.class))).thenReturn(agenda);
+
         AgendaRequestDTO requestBody = AgendaRequestDTO.builder()
                 .name(AGENDA_NAME)
                 .duration(-1).build();
@@ -110,11 +119,19 @@ class CreateAgendaTest {
         mvc.perform(post("/agenda")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapToJson(requestBody)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isCreated());
     }
 
     @Test
-    void creatingNewAgendaWithZeroDurationShouldReturnStatusBadRequest() throws Exception {
+    void creatingNewAgendaWithZeroDurationShouldReturnStatusCreated() throws Exception {
+        Agenda agenda = Agenda.builder()
+                .id(AGENDA_ID)
+                .name(AGENDA_NAME)
+                .duration(DEFAULT_DURATION)
+                .startTime(LocalDateTime.now()).build();
+
+        when(agendaService.createAgenda(any(AgendaRequestDTO.class))).thenReturn(agenda);
+
         AgendaRequestDTO requestBody = AgendaRequestDTO.builder()
                 .name(AGENDA_NAME)
                 .duration(0).build();
@@ -122,18 +139,26 @@ class CreateAgendaTest {
         mvc.perform(post("/agenda")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapToJson(requestBody)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isCreated());
     }
 
     @Test
-    void creatingNewAgendaWithoutDurationShouldReturnStatusBadRequest() throws Exception {
+    void creatingNewAgendaWithoutDurationShouldReturnStatusCreated() throws Exception {
+        Agenda agenda = Agenda.builder()
+                .id(AGENDA_ID)
+                .name(AGENDA_NAME)
+                .duration(AGENDA_DURATION)
+                .startTime(LocalDateTime.now()).build();
+
+        when(agendaService.createAgenda(any(AgendaRequestDTO.class))).thenReturn(agenda);
+
         AgendaRequestDTO requestBody = AgendaRequestDTO.builder()
                 .name(AGENDA_NAME).build();
 
         mvc.perform(post("/agenda")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapToJson(requestBody)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isCreated());
     }
 
     protected String mapToJson(Object obj) throws JsonProcessingException {

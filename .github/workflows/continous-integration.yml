@@ -22,7 +22,7 @@ jobs:
         run: mvn -B clean package -DskipTests
 
   sonarcloud:
-    name: Build
+    name: Code Quality
     runs-on: ubuntu-latest
     needs: [test]
 
@@ -39,6 +39,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   notifySlack:
+    name: Notificar Slack Sucesso
     runs-on: ubuntu-18.04
     needs: [sonarcloud]
 
@@ -52,6 +53,7 @@ jobs:
 
 
   notifySlackIfFailure:
+    name: Notificar Slack Falha
     runs-on: ubuntu-18.04
     needs: [sonarcloud]
     if: failure()

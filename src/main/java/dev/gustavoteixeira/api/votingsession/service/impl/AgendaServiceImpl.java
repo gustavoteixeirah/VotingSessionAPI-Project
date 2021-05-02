@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +29,8 @@ public class AgendaServiceImpl implements AgendaService {
 
     public static final String NEGATIVE_VOTE = "NÂO";
     public static final String POSITIVE_VOTE = "SIM";
+    public static final int DEFAULT_DURATION = 1;
+
     final Logger logger = LoggerFactory.getLogger(AgendaServiceImpl.class);
 
     @Autowired
@@ -41,10 +44,14 @@ public class AgendaServiceImpl implements AgendaService {
 
         var agenda = Agenda.builder()
                 .name(agendaRequest.getName())
-                .duration(agendaRequest.getDuration())
+                .duration(getDuration(agendaRequest))
                 .build();
 
         return registerAgenda(agenda);
+    }
+
+    private int getDuration(AgendaRequestDTO agendaRequest) {
+        return agendaRequest.getDuration() <= 0 ? DEFAULT_DURATION : agendaRequest.getDuration();
     }
 
     @Override

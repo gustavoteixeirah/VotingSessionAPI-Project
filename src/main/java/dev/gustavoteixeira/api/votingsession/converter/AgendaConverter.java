@@ -7,10 +7,6 @@ import static dev.gustavoteixeira.api.votingsession.service.impl.AgendaServiceIm
 
 public class AgendaConverter {
 
-    private AgendaConverter() {
-        throw new IllegalStateException("Utility class");
-    }
-
     public static AgendaResponseDTO getAgendaResponse(Agenda agenda) {
         return AgendaResponseDTO.builder()
                 .id(agenda.getId())

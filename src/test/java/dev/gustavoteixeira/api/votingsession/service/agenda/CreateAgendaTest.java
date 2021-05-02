@@ -1,9 +1,10 @@
-package dev.gustavoteixeira.api.votingsession.service;
+package dev.gustavoteixeira.api.votingsession.service.agenda;
 
 import dev.gustavoteixeira.api.votingsession.dto.request.AgendaRequestDTO;
 import dev.gustavoteixeira.api.votingsession.entity.Agenda;
 import dev.gustavoteixeira.api.votingsession.exception.AgendaAlreadyExistsException;
 import dev.gustavoteixeira.api.votingsession.repository.AgendaRepository;
+import dev.gustavoteixeira.api.votingsession.service.AgendaService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-public class AgendaServiceTest {
+public class CreateAgendaTest {
 
     @Autowired
     private AgendaService agendaService;

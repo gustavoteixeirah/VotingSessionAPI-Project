@@ -5,10 +5,6 @@ import dev.gustavoteixeira.api.votingsession.entity.Vote;
 
 public class VoteConverter {
 
-    private VoteConverter() {
-        throw new IllegalStateException("Utility class");
-    }
-
     public static VoteResponseDTO getVoteResponse(Vote vote) {
         return VoteResponseDTO.builder()
                 .associate(vote.getAssociate())

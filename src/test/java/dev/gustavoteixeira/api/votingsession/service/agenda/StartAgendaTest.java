@@ -28,20 +28,12 @@ public class StartAgendaTest {
     public static final String NONEXISTENT_AGENDA_ID = "608ded0cc66aaf5bd61759de";
     public static final String AGENDA_NAME = "Rising gasoline tax by 3%";
     public static final int AGENDA_DURATION = 10;
-    public static final String ASSOCIATE_IDENTIFIER_1 = "38347541027";
-    public static final String ASSOCIATE_IDENTIFIER_2 = "72545153001";
-    public static final String ASSOCIATE_IDENTIFIER_3 = "10360912010";
-    public static final String POSITIVE_CHOICE = "SIM";
-    public static final String NEGATIVE_CHOICE = "NÂO";
 
     @Autowired
     private AgendaService agendaService;
 
     @MockBean
     private AgendaRepository agendaRepository;
-
-    @MockBean
-    private VoteRepository voteRepository;
 
     @Test
     public void startAgendaWithValidAgendaIdShouldUpdateTheAgendaStartTime() {
@@ -70,7 +62,7 @@ public class StartAgendaTest {
     @Test
     public void startAgendaAlreadyOpenedAgendaShouldThrowAgendaIsAlreadyOpenException() {
         Agenda agenda = getAgenda();
-        agenda.setStartTime(LocalDateTime.now().minusMinutes(5));
+        agenda.setStartTime(LocalDateTime.now().minusMinutes(1));
         Optional<Agenda> agendaOptional = Optional.of(agenda);
 
         when(agendaRepository.findById(eq(AGENDA_ID))).thenReturn(agendaOptional);

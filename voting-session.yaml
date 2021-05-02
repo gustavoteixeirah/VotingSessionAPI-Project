@@ -9,7 +9,6 @@ tags:
   - name: 'Agenda Controller'
     description: 'This is the controller to receive and respond to requests related to agendas'
 paths:
-
   '/agenda':
     post:
       tags:
@@ -28,12 +27,112 @@ paths:
       responses:
         '201':
           description: 'Created'
-          schema:
-            $ref: '#/definitions/AgendaRequestDTO'
         '400':
-          description: Bad Request
+          description: 'Bad Request'
+          schema:
+            example: 'Já existe uma pauta com esse nome.'
         '500':
-          description: Internal Server Error
+          description: 'Internal Server Error'
+      deprecated: false
+
+  '/agenda/{agendaId}':
+    get:
+      tags:
+        - 'Agenda Controller'
+      summary: 'Method to get a agenda'
+      operationId: 'getAgenda'
+      parameters:
+        - in: 'path'
+          name: 'agendaId'
+          description: 'The agenda identifier'
+          required: true
+          type: 'string'
+      responses:
+        '200':
+          description: 'OK'
+          schema:
+            $ref: '#/definitions/AgendaResponseDTO'
+        '400':
+          description: 'Bad Request'
+          schema:
+            example: 'Um ou mais parâmetros da requisição são inválidos.'
+        '404':
+          description: 'Not Found'
+          schema:
+            example: 'Pauta não encontrada.'
+        '500':
+          description: 'Internal Server Error'
+      deprecated: false
+
+
+  '/agenda/{agendaId}/start':
+    patch:
+      tags:
+        - 'Agenda Controller'
+      summary: 'Method to start a agenda'
+      operationId: 'startAgenda'
+      parameters:
+        - in: 'path'
+          name: 'agendaId'
+          description: 'The agenda identifier'
+          required: true
+          type: 'string'
+      responses:
+        '200':
+          description: 'OK'
+        '400':
+          description: 'Bad Request'
+          schema:
+            example: 'Um ou mais parâmetros da requisição são inválidos.'
+        '404':
+          description: 'Not Found'
+          schema:
+            example: 'Pauta não encontrada.'
+        '406':
+          description: 'Not Acceptable'
+          schema:
+            example: 'Essa pauta já está aberta.'
+        '500':
+          description: 'Internal Server Error'
+      deprecated: false
+
+  '/agenda/{agendaId}/vote':
+    post:
+      tags:
+        - 'Agenda Controller'
+      summary: 'Method to start a agenda'
+      operationId: 'startAgenda'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: 'path'
+          name: 'agendaId'
+          description: 'The agenda identifier'
+          required: true
+          type: 'string'
+        - in: 'body'
+          name: 'voteRequest'
+          description: 'The vote request object containing the associate identifier and his choice'
+          required: true
+          schema:
+            $ref: '#/definitions/VoteRequestDTO'
+      responses:
+        '200':
+          description: 'OK'
+        '400':
+          description: 'Bad Request'
+          schema:
+            example: 'Um ou mais parâmetros da requisição são inválidos.'
+        '404':
+          description: 'Not Found'
+          schema:
+            example: 'Pauta não encontrada.'
+        '406':
+          description: 'Not Acceptable'
+          schema:
+            example: 'Já existe um voto registrado desse associado para essa pauta.'
+        '500':
+          description: 'Internal Server Error'
       deprecated: false
 
 
@@ -48,6 +147,57 @@ definitions:
         description: 'Name of the agenda'
       duration:
         type: 'integer'
-        example: 60
-        description: 'Duration of the agenda, expressed in minutes'
+        example: 5
+        description: 'Duration of the agenda, expressed in minutes. If not provided, will be set to 1 minute by default.'
+    required:
+      - 'name'
     title: 'AgendaRequestDTO'
+
+  AgendaResponseDTO:
+    type: 'object'
+    properties:
+      id:
+        type: 'string'
+        example: '608eeb2c2ca0cb06cf53e149'
+        description: 'The agenda identifier.'
+      name:
+        type: 'string'
+        example: 'Rising gasoline tax by 3%'
+        description: 'The agenda name.'
+      startTime:
+        type: 'object'
+        example: '2021-05-02T18:10:46.604Z'
+        description: 'The starting time.'
+      duration:
+        type: 'integer'
+        example: 5
+        description: 'The duration of the agenda, expressed in minutes.'
+      isOpened:
+        type: 'boolean'
+        example: false
+        description: 'Flag to identify is the agenda is open for voting or not.'
+      positiveVotes:
+        type: 'number'
+        example: 500
+        description: 'Field to store the positive votes count for this agenda.'
+      negativeVotes:
+        type: 'number'
+        example: 200
+        description: 'Field to store the negative votes count for this agenda.'
+    title: 'AgendaResponseDTO'
+
+  VoteRequestDTO:
+    type: 'object'
+    properties:
+      associate:
+        type: 'string'
+        example: '25833899044'
+        description: 'Associate identifier (CPF).'
+      choice:
+        type: 'string'
+        example: 'Sim ou Não'
+        description: 'The associate choice for the given agenda.'
+    required:
+      - 'associate'
+      - 'choice'
+    title: 'VoteRequestDTO'

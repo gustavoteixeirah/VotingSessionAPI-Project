@@ -30,7 +30,9 @@ class VoteAgendaTest {
     public static final String AGENDA_ID = "608d817df3117478ca0f7432";
     public static final String NONEXISTENT_AGENDA_ID = "608ded0cc66aaf5bd61759de";
     public static final String ASSOCIATE_IDENTIFIER = "38347541027";
-    public static final String POSITIVE_CHOICE = "SIM";
+    public static final String POSITIVE_CHOICE = "Sim";
+    public static final String NEGATIVE_CHOICE = "Não";
+    public static final String INVALID_CHOICE = "Talvez";
 
     @Autowired
     private MockMvc mvc;
@@ -71,7 +73,7 @@ class VoteAgendaTest {
     void voteAgendaWithClosedAgendaRequestShouldReturnNotAcceptable() throws Exception {
         VoteRequestDTO requestBody = VoteRequestDTO.builder()
                 .associate(ASSOCIATE_IDENTIFIER)
-                .choice(POSITIVE_CHOICE).build();
+                .choice(NEGATIVE_CHOICE).build();
 
         doThrow(AgendaClosedException.class)
                 .when(agendaService).voteAgenda(eq(NONEXISTENT_AGENDA_ID), any(VoteRequestDTO.class));
@@ -86,7 +88,7 @@ class VoteAgendaTest {
     void voteAgendaWithVoteAlreadyRegisteredRequestShouldReturnNotAcceptable() throws Exception {
         VoteRequestDTO requestBody = VoteRequestDTO.builder()
                 .associate(ASSOCIATE_IDENTIFIER)
-                .choice(POSITIVE_CHOICE).build();
+                .choice(NEGATIVE_CHOICE).build();
 
         doThrow(VoteAlreadyExistsException.class)
                 .when(agendaService).voteAgenda(eq(AGENDA_ID), any(VoteRequestDTO.class));
@@ -95,6 +97,18 @@ class VoteAgendaTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapToJson(requestBody)))
                 .andExpect(status().isNotAcceptable());
+    }
+
+    @Test
+    void voteAgendaWithInvalidChoiceRequestShouldReturnBadRequest() throws Exception {
+        VoteRequestDTO requestBody = VoteRequestDTO.builder()
+                .associate(ASSOCIATE_IDENTIFIER)
+                .choice(INVALID_CHOICE).build();
+
+        mvc.perform(post("/agenda/".concat(AGENDA_ID).concat("/vote"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapToJson(requestBody)))
+                .andExpect(status().isBadRequest());
     }
 
     protected String mapToJson(Object obj) throws JsonProcessingException {

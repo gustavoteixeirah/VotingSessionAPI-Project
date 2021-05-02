@@ -17,7 +17,7 @@ public class ControllerAdviceExceptionHandler extends ResponseEntityExceptionHan
             = {AgendaAlreadyExistsException.class})
     public ResponseEntity<String> handleAgendaAlreadyExistsException(AgendaAlreadyExistsException e, WebRequest request) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST).body("Já existe uma pauta com esse nome.");
+                .status(HttpStatus.BAD_REQUEST).body("");
     }
 
     @ExceptionHandler(value

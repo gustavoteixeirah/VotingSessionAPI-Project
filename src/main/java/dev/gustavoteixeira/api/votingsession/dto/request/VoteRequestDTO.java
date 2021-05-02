@@ -2,6 +2,8 @@ package dev.gustavoteixeira.api.votingsession.dto.request;
 
 import lombok.*;
 
+import javax.validation.constraints.Pattern;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -10,6 +12,8 @@ import lombok.*;
 public class VoteRequestDTO {
 
     private String associate;
+
+    @Pattern(regexp = "^(?:Sim|Não)$")
     private String choice;
 
 }

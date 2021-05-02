@@ -83,7 +83,7 @@ public class AgendaController {
      * O retorno, em caso de sucesso, é o status OK.
      */
     @PostMapping("/{agendaId}/vote")
-    public ResponseEntity<Void> voteAgenda(@PathVariable String agendaId, @RequestBody final VoteRequestDTO voteRequest) {
+    public ResponseEntity<Void> voteAgenda(@PathVariable String agendaId, @Valid @RequestBody final VoteRequestDTO voteRequest) {
         logger.info("AgendaController.voteAgenda - Start - Agenda identifier: {}, Associate: {}", agendaId, voteRequest.getAssociate());
 
         agendaService.voteAgenda(agendaId, voteRequest);

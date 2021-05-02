@@ -25,7 +25,7 @@ Para analisar a qualidade de código, foi usado o Sonarcloud.
 <br>
 Você pode verificar a última análise do código através <a href="https://sonarcloud.io/dashboard?id=iwhrim_VotingSessionAPI-Project">desse</a> link.
 
-<img src="https://teixeira983-images.s3.amazonaws.com/code_quality-voting-session-api.png" alt="Screenshot of the Swagger UI documentation">
+<img src="https://teixeira983-images.s3.amazonaws.com/code_quality-voting-session-api.png" alt="Screenshot of the Code Quality report by Sonarcloud">
 Obs: Screenshot tirado em 02/05/2021 as 19h 30min. Para obter as mais recentes estatísticas, acesse o link informado anteriormente.
 
 ## Guia de como usar essa API
@@ -120,3 +120,17 @@ Se buscarmos as informações da pauta através do GET, veremos que o voto foi r
 ```
 
 Após o tempo da pauta ser encerrado, o status "opened" vai mudar para false e então não será mais possível votar nessa pauta.
+
+## Continuous Integration and Continuous Delivery
+Sou um grande fã de CI/CD. Por isso, adicionei nesse projeto uma pipeline, utilizando o GitHub Actions, para executar ações automatizadas que facilitam a minha vida.
+<br>
+A pipeline é constituída das seguintes etapas:
+1. Test: onde são executados os testes da aplicação;
+2. Code Quality: onde o Sonarcloud faz a análise da qualidade do código e da cobertura de código;
+3. Deploy to Heroku: essa etapa realiza o deploy automatizado da aplicação no Heroku;
+4. Publish on Docker Hub: essa etapa cria o container da aplicação e então publica ela no Docker Hub
+5. Notify: nessa, são duas possibilidades, se der tudo certo com as etapas anteriores, será notificado no meu Slack uma mensagem de sucesso, senão, uma mensagem de falha.
+
+
+Abaixo, um screenshot da pipeline:
+<img src="https://teixeira983-images.s3.amazonaws.com/voting-session-api-ci-cd.png" alt="Screenshot of CI/CD pipeline">

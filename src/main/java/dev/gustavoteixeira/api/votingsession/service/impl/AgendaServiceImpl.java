@@ -25,8 +25,8 @@ import static dev.gustavoteixeira.api.votingsession.converter.AgendaConverter.ge
 @Service
 public class AgendaServiceImpl implements AgendaService {
 
-    public static final String NEGATIVE_VOTE = "NÂO";
-    public static final String POSITIVE_VOTE = "SIM";
+    public static final String NEGATIVE_VOTE = "Não";
+    public static final String POSITIVE_VOTE = "Sim";
     public static final int DEFAULT_DURATION = 1;
 
     final Logger logger = LoggerFactory.getLogger(AgendaServiceImpl.class);

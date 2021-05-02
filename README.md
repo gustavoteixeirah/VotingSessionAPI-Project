@@ -36,12 +36,71 @@ Também precisamos de uma duração dessa pauta (duration), porém não é obrig
 Para fazer as requisições, irei usar o curl. Abaixo, segue o exemplo para criar uma agenda chamada "Aumento de 3% no imposto de internet durante a pandemia" com duração de 10 minutos:
 
 ```
-curl --location --request POST 'https://github-api-microservice.herokuapp.com/agenda' \
+curl --location --request POST 'https://voting-session-api.herokuapp.com//agenda' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "name":"Aumento de 3% no imposto de internet durante a pandemia",
+    "name":"Aumento de 3% no imposto de ianternet duraante a pandemia",
     "duration": 10
 }'
 ```
 
-O resultado dessa requisição 
+O resultado dessa requisição vai ser os status 201 CREATED, e também vai ser retornado no header a localização dessa pauta, através do identificador:
+
+```
+https://voting-session-api.herokuapp.com/agenda/608f2b4fe422d16ab6d208ea
+```
+
+Com esse identificador, podemos fazer a requisição de GET, que retorna a pauta:
+
+```
+curl --location --request GET 'https://voting-session-api.herokuapp.com//agenda/608f2b4fe422d16ab6d208ea' \
+--header 'Content-Type: application/json'
+```
+
+O retorno é o objeto representando a agenda:
+
+```
+{
+    "id": "608f2b4fe422d16ab6d208ea",
+    "name": "Aumento de 3% no imposto de ianternet durante a pandemia",
+    "startTime": null,
+    "duration": 10,
+    "positiveVotes": 0,
+    "negativeVotes": 0,
+    "opened": false
+}
+```
+
+Podemos ver que a pauta está com o status "opened" como falso. Para abrirmos a pauta, dando inicio a possibilidade de votação nela, devemos chamar o endpoint de abertura de pauta:
+
+```
+curl --location --request PATCH 'https://voting-session-api.herokuapp.com//agenda/608f2b4fe422d16ab6d208ea/start' \
+--header 'Content-Type: application/json'
+```
+
+Com isso, a pauta estará aberta, e podemos votar nela. Podemos validar isso chamando novamente a requisição GET que retorna a pauta:
+
+```
+{
+    "id": "608f2b4fe422d16ab6d208ea",
+    "name": "Aumento de 3% no imposto de ianternet durante a pandemia",
+    "startTime": "2021-05-02T22:46:56.075",
+    "duration": 10,
+    "positiveVotes": 0,
+    "negativeVotes": 0,
+    "opened": true
+}
+```
+
+Perceba que agora o status "opened" está como true. Dessa maneira, podemos votar. Para isso, chamamos o endpoint de votação, informando o identificador da pauta, e um objeto no corpo da requisição descrevendo o nosso voto:
+
+```
+curl --location --request POST 'https://voting-session-api.herokuapp.com//agenda/608f2b4fe422d16ab6d208ea/vote' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"associate": "19839091069",
+"choice": "Não"
+}'
+```
+
+As possibilidades de voto são apenas "Sim" ou "Não", como descrito na documentação da API.

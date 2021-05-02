@@ -45,9 +45,9 @@ public class GetAgendaTest {
     private VoteRepository voteRepository;
 
     @Test
-    public void getAgendaWithValidAgendaIdShouldReturnAgendaResponseDTO() {
+    void getAgendaWithValidAgendaIdShouldReturnAgendaResponseDTO() {
         Optional<Agenda> agendaOptional = Optional.of(getAgenda());
-        when(agendaRepository.findById(eq(AGENDA_ID))).thenReturn(agendaOptional);
+        when(agendaRepository.findById(AGENDA_ID)).thenReturn(agendaOptional);
 
         AgendaResponseDTO result = agendaService.getAgenda(AGENDA_ID);
 
@@ -62,11 +62,11 @@ public class GetAgendaTest {
     }
 
     @Test
-    public void getAgendaWithVotingInProgressShouldReturnAgendaResponseDTO() {
+    void getAgendaWithVotingInProgressShouldReturnAgendaResponseDTO() {
         Agenda agenda = getAgenda();
         agenda.setStartTime(LocalDateTime.now().minusMinutes(5));
         Optional<Agenda> agendaOptional = Optional.of(agenda);
-        when(agendaRepository.findById(eq(AGENDA_ID))).thenReturn(agendaOptional);
+        when(agendaRepository.findById(AGENDA_ID)).thenReturn(agendaOptional);
 
         AgendaResponseDTO result = agendaService.getAgenda(AGENDA_ID);
 
@@ -81,13 +81,13 @@ public class GetAgendaTest {
     }
 
     @Test
-    public void getAgendaWithVotingInProgressAndWithVotesShouldReturnAgendaResponseDTO() {
+    void getAgendaWithVotingInProgressAndWithVotesShouldReturnAgendaResponseDTO() {
         Agenda agenda = getAgenda();
         agenda.setStartTime(LocalDateTime.now().minusMinutes(5));
         Optional<Agenda> agendaOptional = Optional.of(agenda);
 
         when(agendaRepository.findById(eq(AGENDA_ID))).thenReturn(agendaOptional);
-        when(voteRepository.findAllByAgendaId(eq(AGENDA_ID))).thenReturn(getVoteList());
+        when(voteRepository.findAllByAgendaId(AGENDA_ID)).thenReturn(getVoteList());
 
         AgendaResponseDTO result = agendaService.getAgenda(AGENDA_ID);
 
@@ -102,13 +102,13 @@ public class GetAgendaTest {
     }
 
     @Test
-    public void getAgendaWithVotingClosedAndWithVotesShouldReturnAgendaResponseDTO() {
+    void getAgendaWithVotingClosedAndWithVotesShouldReturnAgendaResponseDTO() {
         Agenda agenda = getAgenda();
         agenda.setStartTime(LocalDateTime.now().minusMinutes(10));
         Optional<Agenda> agendaOptional = Optional.of(agenda);
 
         when(agendaRepository.findById(eq(AGENDA_ID))).thenReturn(agendaOptional);
-        when(voteRepository.findAllByAgendaId(eq(AGENDA_ID))).thenReturn(getVoteList());
+        when(voteRepository.findAllByAgendaId(AGENDA_ID)).thenReturn(getVoteList());
 
         AgendaResponseDTO result = agendaService.getAgenda(AGENDA_ID);
 
@@ -123,10 +123,10 @@ public class GetAgendaTest {
     }
 
     @Test
-    public void getAgendaWithNonexistentAgendaIdShouldThrowAgendaNotFoundException() {
+    void getAgendaWithNonexistentAgendaIdShouldThrowAgendaNotFoundException() {
         Optional<Agenda> agendaOptional = Optional.empty();
 
-        when(agendaRepository.findById(eq(NONEXISTENT_AGENDA_ID))).thenReturn(agendaOptional);
+        when(agendaRepository.findById(NONEXISTENT_AGENDA_ID)).thenReturn(agendaOptional);
 
         RuntimeException exception = Assertions.assertThrows(AgendaNotFoundException.class,
                 () -> agendaService.getAgenda(NONEXISTENT_AGENDA_ID));

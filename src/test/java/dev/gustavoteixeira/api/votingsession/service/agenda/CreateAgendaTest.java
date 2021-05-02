@@ -14,8 +14,7 @@ import org.springframework.dao.DuplicateKeyException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class CreateAgendaTest {
@@ -27,13 +26,14 @@ public class CreateAgendaTest {
     private AgendaRepository agendaRepository;
 
     @Test
-    public void createNewAgenda() {
+    void createNewAgenda() {
         when(agendaRepository.insert(any(Agenda.class))).thenReturn(Agenda.builder().build());
         agendaService.createAgenda(getAgendaDTO());
+        verify(agendaRepository, times(1)).insert(any(Agenda.class));
     }
 
     @Test
-    public void createNewAgendaWithNameThatAlreadyExistsShouldReturnAgendaAlreadyExistsException() {
+    void createNewAgendaWithNameThatAlreadyExistsShouldReturnAgendaAlreadyExistsException() {
         doThrow(DuplicateKeyException.class).when(agendaRepository).insert(any(Agenda.class));
 
         RuntimeException exception = Assertions.assertThrows(AgendaAlreadyExistsException.class,

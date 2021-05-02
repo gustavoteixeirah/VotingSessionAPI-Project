@@ -31,32 +31,32 @@ public class StartAgendaTest {
     private AgendaService agendaService;
 
     @Test
-    public void startAgendaWithExistingAgendaIdShouldReturnOk() throws Exception {
-        doNothing().when(agendaService).startAgenda(eq(AGENDA_ID));
+    void startAgendaWithExistingAgendaIdShouldReturnOk() throws Exception {
+        doNothing().when(agendaService).startAgenda(AGENDA_ID);
 
         mvc.perform(patch("/agenda/".concat(AGENDA_ID).concat("/start")))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void startAgendaWithNonExistingAgendaIdShouldReturnNotFound() throws Exception {
-        doThrow(AgendaNotFoundException.class).when(agendaService).startAgenda(eq(NONEXISTENT_AGENDA_ID));
+    void startAgendaWithNonExistingAgendaIdShouldReturnNotFound() throws Exception {
+        doThrow(AgendaNotFoundException.class).when(agendaService).startAgenda(NONEXISTENT_AGENDA_ID);
 
         mvc.perform(patch("/agenda/".concat(NONEXISTENT_AGENDA_ID).concat("/start")))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void startAgendaThatIsAlreadyOpenShouldReturnNotAcceptable() throws Exception {
-        doThrow(AgendaIsAlreadyOpenException.class).when(agendaService).startAgenda(eq(AGENDA_ID));
+    void startAgendaThatIsAlreadyOpenShouldReturnNotAcceptable() throws Exception {
+        doThrow(AgendaIsAlreadyOpenException.class).when(agendaService).startAgenda(AGENDA_ID);
 
         mvc.perform(patch("/agenda/".concat(AGENDA_ID).concat("/start")))
                 .andExpect(status().isNotAcceptable());
     }
 
     @Test
-    public void startAgendaThatIsClosedShouldReturnNotAcceptable() throws Exception {
-        doThrow(AgendaHasAlreadyBeenClosedException.class).when(agendaService).startAgenda(eq(AGENDA_ID));
+    void startAgendaThatIsClosedShouldReturnNotAcceptable() throws Exception {
+        doThrow(AgendaHasAlreadyBeenClosedException.class).when(agendaService).startAgenda(AGENDA_ID);
 
         mvc.perform(patch("/agenda/".concat(AGENDA_ID).concat("/start")))
                 .andExpect(status().isNotAcceptable());

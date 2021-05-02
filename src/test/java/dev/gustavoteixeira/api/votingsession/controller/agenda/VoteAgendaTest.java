@@ -41,7 +41,7 @@ public class VoteAgendaTest {
     private AgendaService agendaService;
 
     @Test
-    public void voteAgendaWithValidRequestShouldReturnOK() throws Exception {
+    void voteAgendaWithValidRequestShouldReturnOK() throws Exception {
         VoteRequestDTO requestBody = VoteRequestDTO.builder()
                 .associate("validCPF")
                 .choice(POSITIVE_CHOICE).build();
@@ -56,7 +56,7 @@ public class VoteAgendaTest {
     }
 
     @Test
-    public void voteAgendaWithNonexistentAgendaRequestShouldReturnNotFound() throws Exception {
+    void voteAgendaWithNonexistentAgendaRequestShouldReturnNotFound() throws Exception {
         VoteRequestDTO requestBody = VoteRequestDTO.builder()
                 .associate(ASSOCIATE_IDENTIFIER)
                 .choice(POSITIVE_CHOICE).build();
@@ -71,7 +71,7 @@ public class VoteAgendaTest {
     }
 
     @Test
-    public void voteAgendaWithClosedAgendaRequestShouldReturnNotAcceptable() throws Exception {
+    void voteAgendaWithClosedAgendaRequestShouldReturnNotAcceptable() throws Exception {
         VoteRequestDTO requestBody = VoteRequestDTO.builder()
                 .associate(ASSOCIATE_IDENTIFIER)
                 .choice(POSITIVE_CHOICE).build();
@@ -86,7 +86,7 @@ public class VoteAgendaTest {
     }
 
     @Test
-    public void voteAgendaWithVoteAlreadyRegisteredRequestShouldReturnNotAcceptable() throws Exception {
+    void voteAgendaWithVoteAlreadyRegisteredRequestShouldReturnNotAcceptable() throws Exception {
         VoteRequestDTO requestBody = VoteRequestDTO.builder()
                 .associate(ASSOCIATE_IDENTIFIER)
                 .choice(POSITIVE_CHOICE).build();

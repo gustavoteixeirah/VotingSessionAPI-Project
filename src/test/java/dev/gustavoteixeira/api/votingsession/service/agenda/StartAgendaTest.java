@@ -36,11 +36,11 @@ public class StartAgendaTest {
     private AgendaRepository agendaRepository;
 
     @Test
-    public void startAgendaWithValidAgendaIdShouldUpdateTheAgendaStartTime() {
+    void startAgendaWithValidAgendaIdShouldUpdateTheAgendaStartTime() {
         Agenda agenda = getAgenda();
         Optional<Agenda> agendaOptional = Optional.of(agenda);
 
-        when(agendaRepository.findById(eq(AGENDA_ID))).thenReturn(agendaOptional);
+        when(agendaRepository.findById(AGENDA_ID)).thenReturn(agendaOptional);
 
         agendaService.startAgenda(AGENDA_ID);
 
@@ -48,10 +48,10 @@ public class StartAgendaTest {
     }
 
     @Test
-    public void startAgendaWithInvalidAgendaIdShouldThrowAgendaNotFoundException() {
+    void startAgendaWithInvalidAgendaIdShouldThrowAgendaNotFoundException() {
         Optional<Agenda> agendaOptional = Optional.empty();
 
-        when(agendaRepository.findById(eq(NONEXISTENT_AGENDA_ID))).thenReturn(agendaOptional);
+        when(agendaRepository.findById(NONEXISTENT_AGENDA_ID)).thenReturn(agendaOptional);
 
         RuntimeException exception = Assertions.assertThrows(AgendaNotFoundException.class,
                 () -> agendaService.startAgenda(NONEXISTENT_AGENDA_ID));
@@ -60,12 +60,12 @@ public class StartAgendaTest {
     }
 
     @Test
-    public void startAgendaAlreadyOpenedAgendaShouldThrowAgendaIsAlreadyOpenException() {
+    void startAgendaAlreadyOpenedAgendaShouldThrowAgendaIsAlreadyOpenException() {
         Agenda agenda = getAgenda();
         agenda.setStartTime(LocalDateTime.now().minusMinutes(1));
         Optional<Agenda> agendaOptional = Optional.of(agenda);
 
-        when(agendaRepository.findById(eq(AGENDA_ID))).thenReturn(agendaOptional);
+        when(agendaRepository.findById(AGENDA_ID)).thenReturn(agendaOptional);
 
         RuntimeException exception = Assertions.assertThrows(AgendaIsAlreadyOpenException.class,
                 () -> agendaService.startAgenda(AGENDA_ID));
@@ -74,12 +74,12 @@ public class StartAgendaTest {
     }
 
     @Test
-    public void startAgendaThatIsClosedShouldThrowAgendaHasAlreadyBeenClosedException() {
+    void startAgendaThatIsClosedShouldThrowAgendaHasAlreadyBeenClosedException() {
         Agenda agenda = getAgenda();
         agenda.setStartTime(LocalDateTime.now().minusMinutes(10));
         Optional<Agenda> agendaOptional = Optional.of(agenda);
 
-        when(agendaRepository.findById(eq(AGENDA_ID))).thenReturn(agendaOptional);
+        when(agendaRepository.findById(AGENDA_ID)).thenReturn(agendaOptional);
 
         RuntimeException exception = Assertions.assertThrows(AgendaHasAlreadyBeenClosedException.class,
                 () -> agendaService.startAgenda(AGENDA_ID));

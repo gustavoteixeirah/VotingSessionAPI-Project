@@ -37,7 +37,7 @@ public class CreateAgendaTest {
     private AgendaService agendaService;
 
     @Test
-    public void creatingNewAgendaShouldReturnStatusCreated() throws Exception {
+    void creatingNewAgendaShouldReturnStatusCreated() throws Exception {
         Agenda agenda = Agenda.builder()
                 .id(AGENDA_ID)
                 .name(AGENDA_NAME)
@@ -59,7 +59,7 @@ public class CreateAgendaTest {
     }
 
     @Test
-    public void creatingNewAgendaWithNameThatAlreadyExistsShouldReturnBadRequest() throws Exception {
+    void creatingNewAgendaWithNameThatAlreadyExistsShouldReturnBadRequest() throws Exception {
         Agenda agenda = Agenda.builder()
                 .id(AGENDA_ID)
                 .name(AGENDA_NAME)
@@ -79,7 +79,7 @@ public class CreateAgendaTest {
     }
 
     @Test
-    public void creatingNewAgendaWithEmptyNameShouldReturnStatusBadRequest() throws Exception {
+    void creatingNewAgendaWithEmptyNameShouldReturnStatusBadRequest() throws Exception {
         AgendaRequestDTO requestBody = AgendaRequestDTO.builder()
                 .name("")
                 .duration(AGENDA_DURATION).build();
@@ -91,7 +91,7 @@ public class CreateAgendaTest {
     }
 
     @Test
-    public void creatingNewAgendaWithoutNameShouldReturnStatusBadRequest() throws Exception {
+    void creatingNewAgendaWithoutNameShouldReturnStatusBadRequest() throws Exception {
         AgendaRequestDTO requestBody = AgendaRequestDTO.builder()
                 .duration(AGENDA_DURATION).build();
 
@@ -102,7 +102,7 @@ public class CreateAgendaTest {
     }
 
     @Test
-    public void creatingNewAgendaWithNegativeDurationShouldReturnStatusBadRequest() throws Exception {
+    void creatingNewAgendaWithNegativeDurationShouldReturnStatusBadRequest() throws Exception {
         AgendaRequestDTO requestBody = AgendaRequestDTO.builder()
                 .name(AGENDA_NAME)
                 .duration(-1).build();
@@ -114,7 +114,7 @@ public class CreateAgendaTest {
     }
 
     @Test
-    public void creatingNewAgendaWithZeroDurationShouldReturnStatusBadRequest() throws Exception {
+    void creatingNewAgendaWithZeroDurationShouldReturnStatusBadRequest() throws Exception {
         AgendaRequestDTO requestBody = AgendaRequestDTO.builder()
                 .name(AGENDA_NAME)
                 .duration(0).build();
@@ -126,7 +126,7 @@ public class CreateAgendaTest {
     }
 
     @Test
-    public void creatingNewAgendaWithoutDurationShouldReturnStatusBadRequest() throws Exception {
+    void creatingNewAgendaWithoutDurationShouldReturnStatusBadRequest() throws Exception {
         AgendaRequestDTO requestBody = AgendaRequestDTO.builder()
                 .name(AGENDA_NAME).build();
 

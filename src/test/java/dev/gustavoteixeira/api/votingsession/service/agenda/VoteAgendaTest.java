@@ -43,7 +43,7 @@ public class VoteAgendaTest {
     private VoteRepository voteRepository;
 
     @Test
-    public void startAgendaWithValidAgendaIdShouldUpdateTheAgendaStartTime() {
+    void startAgendaWithValidAgendaIdShouldUpdateTheAgendaStartTime() {
         VoteRequestDTO voteRequest = VoteRequestDTO.builder()
                 .associate(ASSOCIATE_IDENTIFIER_1)
                 .choice(POSITIVE_CHOICE).build();
@@ -55,8 +55,8 @@ public class VoteAgendaTest {
         agenda.setStartTime(LocalDateTime.now().minusMinutes(5));
         Optional<Agenda> agendaOptional = Optional.of(agenda);
 
-        when(agendaRepository.findById(eq(AGENDA_ID))).thenReturn(agendaOptional);
-        when(voteRepository.findByAssociateAndAgendaId(eq(ASSOCIATE_IDENTIFIER_1), eq(AGENDA_ID)))
+        when(agendaRepository.findById(AGENDA_ID)).thenReturn(agendaOptional);
+        when(voteRepository.findByAssociateAndAgendaId(ASSOCIATE_IDENTIFIER_1, AGENDA_ID))
                 .thenReturn(null);
         when(voteRepository.insert(any(Vote.class)))
                 .thenReturn(vote);

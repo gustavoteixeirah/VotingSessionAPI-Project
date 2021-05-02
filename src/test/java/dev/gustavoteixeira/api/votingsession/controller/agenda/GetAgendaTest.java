@@ -31,21 +31,21 @@ public class GetAgendaTest {
     private AgendaService agendaService;
 
     @Test
-    public void getAgendaWithExistingAgendaShouldReturnAnAgendaResponse() throws Exception {
+    void getAgendaWithExistingAgendaShouldReturnAnAgendaResponse() throws Exception {
         AgendaResponseDTO response = AgendaResponseDTO.builder()
                 .id(AGENDA_ID)
                 .name(AGENDA_NAME)
                 .duration(AGENDA_DURATION).build();
 
-        when(agendaService.getAgenda(eq(AGENDA_ID))).thenReturn(response);
+        when(agendaService.getAgenda(AGENDA_ID)).thenReturn(response);
 
         mvc.perform(get("/agenda/"+AGENDA_ID))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void getAgendaThatDoesNotExistShouldReturnNotFound() throws Exception {
-        when(agendaService.getAgenda(eq(NONEXISTENT_AGENDA_ID))).thenThrow(AgendaNotFoundException.class);
+    void getAgendaThatDoesNotExistShouldReturnNotFound() throws Exception {
+        when(agendaService.getAgenda(NONEXISTENT_AGENDA_ID)).thenThrow(AgendaNotFoundException.class);
 
         mvc.perform(get("/agenda/"+ NONEXISTENT_AGENDA_ID))
                 .andExpect(status().isNotFound());

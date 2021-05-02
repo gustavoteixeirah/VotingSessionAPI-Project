@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 
@@ -25,7 +26,7 @@ public class AgendaController {
     private AgendaService agendaService;
 
     @PostMapping
-    public ResponseEntity<Void> createAgenda(@RequestBody final AgendaRequestDTO agendaRequest) {
+    public ResponseEntity<Void> createAgenda(@Valid @RequestBody final AgendaRequestDTO agendaRequest) {
         logger.info("AgendaController.createAgenda - Start - Agenda: {}", agendaRequest);
 
         var agenda = agendaService.createAgenda(agendaRequest);

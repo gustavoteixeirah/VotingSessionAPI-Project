@@ -32,8 +32,8 @@ class GetAgendaTest {
     public static final String ASSOCIATE_IDENTIFIER_1 = "38347541027";
     public static final String ASSOCIATE_IDENTIFIER_2 = "72545153001";
     public static final String ASSOCIATE_IDENTIFIER_3 = "10360912010";
-    public static final String POSITIVE_CHOICE = "SIM";
-    public static final String NEGATIVE_CHOICE = "NÂO";
+    public static final String POSITIVE_CHOICE = "Sim";
+    public static final String NEGATIVE_CHOICE = "Não";
 
     @Autowired
     private AgendaService agendaService;

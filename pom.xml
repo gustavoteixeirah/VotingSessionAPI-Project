@@ -15,9 +15,10 @@
     <description>Essa é uma API para uma Sessão de Votação</description>
     <properties>
         <java.version>11</java.version>
-        <sonar.projectKey>iwhrim_VotingSessionAPI-Project</sonar.projectKey>
-        <sonar.organization>devgustavoteixeira</sonar.organization>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <code.coverage.exclusions>
+            **/dev/gustavoteixeira/api/votingsession/entity/**,
+            **/dev/gustavoteixeira/api/votingsession/VotingSessionApplication.java
+        </code.coverage.exclusions>
     </properties>
 
     <dependencies>
@@ -65,18 +66,41 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.9.0.2155</version>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.6</version>
-            </plugin>
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <properties>
+                <sonar.sources>.</sonar.sources>
+                <sonar.inclusions>src/main/java/**,src/main/resources/**</sonar.inclusions>
+                <sonar.exclusions>${code.coverage.exclusions}</sonar.exclusions>
+                <sonar.projectKey>iwhrim_VotingSessionAPI-Project</sonar.projectKey>
+                <sonar.organization>devgustavoteixeira</sonar.organization>
+                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+            </properties>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>3.7.0.1746</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sonar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

@@ -19,6 +19,9 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 class CreateAgendaTest {
 
+    public static final String AGENDA_NAME = "Rising gasoline tax by 3%";
+    public static final int AGENDA_DURATION = 60;
+
     @Autowired
     private AgendaService agendaService;
 
@@ -44,8 +47,8 @@ class CreateAgendaTest {
 
     private AgendaRequestDTO getAgendaDTO() {
         return AgendaRequestDTO.builder()
-                .name("Aumento no imposto da gasolina")
-                .duration(60)
+                .name(AGENDA_NAME)
+                .duration(AGENDA_DURATION)
                 .build();
     }
 

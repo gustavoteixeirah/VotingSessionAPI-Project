@@ -39,7 +39,7 @@ public class AgendaServiceImpl implements AgendaService {
     @Override
     public Agenda createAgenda(AgendaRequestDTO agendaRequest) {
 
-        Agenda agenda = Agenda.builder()
+        var agenda = Agenda.builder()
                 .name(agendaRequest.getName())
                 .duration(agendaRequest.getDuration())
                 .build();
@@ -49,7 +49,7 @@ public class AgendaServiceImpl implements AgendaService {
 
     @Override
     public AgendaResponseDTO getAgenda(String agendaId) {
-        Agenda agenda = verifyIfAgendaExist(agendaId);
+        var agenda = verifyIfAgendaExist(agendaId);
 
         AgendaResponseDTO agendaResponse = getAgendaResponse(agenda);
 
@@ -68,7 +68,7 @@ public class AgendaServiceImpl implements AgendaService {
 
     @Override
     public void startAgenda(String agendaId) {
-        Agenda agenda = verifyIfAgendaExist(agendaId);
+        var agenda = verifyIfAgendaExist(agendaId);
         verifyIfAgendaIsAlreadyOpen(agenda);
         verifyIfAgendaIsClose(agenda);
         agenda.setStartTime(LocalDateTime.now());
@@ -91,12 +91,12 @@ public class AgendaServiceImpl implements AgendaService {
     public VoteResponseDTO voteAgenda(String agendaId, VoteRequestDTO voteRequest) {
         //TODO verify if associate is able to vote by checking the cpf with the validator provided on the challenge description [Tarefa bonus 1]
 
-        Agenda agenda = verifyIfAgendaExist(agendaId);
+        var agenda = verifyIfAgendaExist(agendaId);
 
         verifyIfAgendaIsOpen(agenda);
         verifyIfAssociateHaveNotVotedYet(agendaId, voteRequest);
 
-        Vote vote = Vote.builder()
+        var vote = Vote.builder()
                 .agendaId(agendaId)
                 .associate(voteRequest.getAssociate())
                 .choice(voteRequest.getChoice())

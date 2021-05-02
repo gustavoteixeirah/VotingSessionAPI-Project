@@ -104,3 +104,19 @@ curl --location --request POST 'https://voting-session-api.herokuapp.com//agenda
 ```
 
 As possibilidades de voto são apenas "Sim" ou "Não", como descrito na documentação da API.
+<br>
+Se buscarmos as informações da pauta através do GET, veremos que o voto foi registrado:
+
+```
+{
+    "id": "608f2b4fe422d16ab6d208ea",
+    "name": "Aumento de 3% no imposto de ianternet durante a pandemia",
+    "startTime": "2021-05-02T22:46:56.075",
+    "duration": 10,
+    "positiveVotes": 0,
+    "negativeVotes": 1
+    "opened": true
+}
+```
+
+Após o tempo da pauta ser encerrado, o status "opened" vai mudar para false e então não será mais possível votar nessa pauta.

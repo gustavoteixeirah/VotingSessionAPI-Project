@@ -1,9 +1,10 @@
-package dev.gustavoteixeira.api.votingsession.controller;
+package dev.gustavoteixeira.api.votingsession.controller.agenda;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.gustavoteixeira.api.votingsession.dto.request.AgendaRequestDTO;
 import dev.gustavoteixeira.api.votingsession.entity.Agenda;
+import dev.gustavoteixeira.api.votingsession.exception.AgendaAlreadyExistsException;
 import dev.gustavoteixeira.api.votingsession.service.AgendaService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,15 +42,13 @@ public class CreateAgendaTest {
                 .id(AGENDA_ID)
                 .name(AGENDA_NAME)
                 .duration(AGENDA_DURATION)
-                .startTime(LocalDateTime.now())
-                .build();
+                .startTime(LocalDateTime.now()).build();
 
         when(agendaService.createAgenda(any(AgendaRequestDTO.class))).thenReturn(agenda);
 
         AgendaRequestDTO requestBody = AgendaRequestDTO.builder()
                 .name(AGENDA_NAME)
-                .duration(AGENDA_DURATION)
-                .build();
+                .duration(AGENDA_DURATION).build();
 
         mvc.perform(post("/agenda")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -60,66 +59,81 @@ public class CreateAgendaTest {
     }
 
     @Test
-    public void creatingNewAgendaWithEmptyNameShouldReturnStatusBadRequest() throws Exception {
-        AgendaRequestDTO requestBody = AgendaRequestDTO.builder()
-                .name("")
+    public void creatingNewAgendaWithNameThatAlreadyExistsShouldReturnBadRequest() throws Exception {
+        Agenda agenda = Agenda.builder()
+                .id(AGENDA_ID)
+                .name(AGENDA_NAME)
                 .duration(AGENDA_DURATION)
-                .build();
+                .startTime(LocalDateTime.now()).build();
+
+        when(agendaService.createAgenda(any(AgendaRequestDTO.class))).thenThrow(AgendaAlreadyExistsException.class);
+
+        AgendaRequestDTO requestBody = AgendaRequestDTO.builder()
+                .name(AGENDA_NAME)
+                .duration(AGENDA_DURATION).build();
 
         mvc.perform(post("/agenda")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(requestBody))
-        ).andExpect(status().isBadRequest());
+                .content(mapToJson(requestBody)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void creatingNewAgendaWithEmptyNameShouldReturnStatusBadRequest() throws Exception {
+        AgendaRequestDTO requestBody = AgendaRequestDTO.builder()
+                .name("")
+                .duration(AGENDA_DURATION).build();
+
+        mvc.perform(post("/agenda")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapToJson(requestBody)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void creatingNewAgendaWithoutNameShouldReturnStatusBadRequest() throws Exception {
         AgendaRequestDTO requestBody = AgendaRequestDTO.builder()
-                .duration(AGENDA_DURATION)
-                .build();
+                .duration(AGENDA_DURATION).build();
 
         mvc.perform(post("/agenda")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(requestBody))
-        ).andExpect(status().isBadRequest());
+                .content(mapToJson(requestBody)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void creatingNewAgendaWithNegativeDurationShouldReturnStatusBadRequest() throws Exception {
         AgendaRequestDTO requestBody = AgendaRequestDTO.builder()
                 .name(AGENDA_NAME)
-                .duration(-1)
-                .build();
+                .duration(-1).build();
 
         mvc.perform(post("/agenda")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(requestBody))
-        ).andExpect(status().isBadRequest());
+                .content(mapToJson(requestBody)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void creatingNewAgendaWithZeroDurationShouldReturnStatusBadRequest() throws Exception {
         AgendaRequestDTO requestBody = AgendaRequestDTO.builder()
                 .name(AGENDA_NAME)
-                .duration(0)
-                .build();
+                .duration(0).build();
 
         mvc.perform(post("/agenda")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(requestBody))
-        ).andExpect(status().isBadRequest());
+                .content(mapToJson(requestBody)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void creatingNewAgendaWithoutDurationShouldReturnStatusBadRequest() throws Exception {
         AgendaRequestDTO requestBody = AgendaRequestDTO.builder()
-                .name(AGENDA_NAME)
-                .build();
+                .name(AGENDA_NAME).build();
 
         mvc.perform(post("/agenda")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(requestBody))
-        ).andExpect(status().isBadRequest());
+                .content(mapToJson(requestBody)))
+                .andExpect(status().isBadRequest());
     }
 
     protected String mapToJson(Object obj) throws JsonProcessingException {
@@ -128,4 +142,3 @@ public class CreateAgendaTest {
     }
 
 }
-

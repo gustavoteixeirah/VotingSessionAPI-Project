@@ -6,10 +6,7 @@ import dev.gustavoteixeira.api.votingsession.dto.response.AgendaResponseDTO;
 import dev.gustavoteixeira.api.votingsession.dto.response.VoteResponseDTO;
 import dev.gustavoteixeira.api.votingsession.entity.Agenda;
 import dev.gustavoteixeira.api.votingsession.entity.Vote;
-import dev.gustavoteixeira.api.votingsession.exception.AgendaAlreadyExistsException;
-import dev.gustavoteixeira.api.votingsession.exception.AgendaClosedException;
-import dev.gustavoteixeira.api.votingsession.exception.AgendaNotFoundException;
-import dev.gustavoteixeira.api.votingsession.exception.VoteAlreadyExistsException;
+import dev.gustavoteixeira.api.votingsession.exception.*;
 import dev.gustavoteixeira.api.votingsession.repository.AgendaRepository;
 import dev.gustavoteixeira.api.votingsession.repository.VoteRepository;
 import dev.gustavoteixeira.api.votingsession.service.AgendaService;
@@ -72,8 +69,22 @@ public class AgendaServiceImpl implements AgendaService {
     @Override
     public void startAgenda(String agendaId) {
         Agenda agenda = verifyIfAgendaExist(agendaId);
+        verifyIfAgendaIsAlreadyOpen(agenda);
+        verifyIfAgendaIsClose(agenda);
         agenda.setStartTime(LocalDateTime.now());
         agendaRepository.save(agenda);
+    }
+
+    private void verifyIfAgendaIsClose(Agenda agenda) {
+        if (!agendaIsOpen(agenda) && agenda.getStartTime() != null) {
+            throw new AgendaHasAlreadyBeenClosedException();
+        }
+    }
+
+    private void verifyIfAgendaIsAlreadyOpen(Agenda agenda) {
+        if (agendaIsOpen(agenda)) {
+            throw new AgendaIsAlreadyOpenException();
+        }
     }
 
     @Override
@@ -83,7 +94,7 @@ public class AgendaServiceImpl implements AgendaService {
 
         Agenda agenda = verifyIfAgendaExist(agendaId);
 
-        verifyIfAgendaIsOpen(agenda);
+        verifyIfAgendaIsClosed(agenda);
 
         verifyIfAssociateAlreadyVoted(agendaId, voteRequest);
 
@@ -104,7 +115,7 @@ public class AgendaServiceImpl implements AgendaService {
         }
     }
 
-    private void verifyIfAgendaIsOpen(Agenda agenda) {
+    private void verifyIfAgendaIsClosed(Agenda agenda) {
         if (!agendaIsOpen(agenda)) {
             throw new AgendaClosedException();
         }

@@ -1,9 +1,6 @@
 package dev.gustavoteixeira.api.votingsession.exception.handler;
 
-import dev.gustavoteixeira.api.votingsession.exception.AgendaAlreadyExistsException;
-import dev.gustavoteixeira.api.votingsession.exception.AgendaClosedException;
-import dev.gustavoteixeira.api.votingsession.exception.AgendaNotFoundException;
-import dev.gustavoteixeira.api.votingsession.exception.VoteAlreadyExistsException;
+import dev.gustavoteixeira.api.votingsession.exception.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +21,20 @@ public class ControllerAdviceExceptionHandler extends ResponseEntityExceptionHan
     }
 
     @ExceptionHandler(value
+            = {AgendaIsAlreadyOpenException.class})
+    public ResponseEntity<String> handleAgendaIsAlreadyOpenException(AgendaIsAlreadyOpenException e, WebRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_ACCEPTABLE).body("Essa pauta já está aberta.");
+    }
+
+    @ExceptionHandler(value
+            = {AgendaHasAlreadyBeenClosedException.class})
+    public ResponseEntity<String> handleAgendaHasAlreadyBeenClosedException(AgendaHasAlreadyBeenClosedException e, WebRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_ACCEPTABLE).body("Essa pauta já foi encerrada.");
+    }
+
+    @ExceptionHandler(value
             = {VoteAlreadyExistsException.class})
     public ResponseEntity<String> handleVoteAlreadyExistsException(VoteAlreadyExistsException e, WebRequest request) {
         return ResponseEntity
@@ -34,7 +45,7 @@ public class ControllerAdviceExceptionHandler extends ResponseEntityExceptionHan
             = {AgendaNotFoundException.class})
     public ResponseEntity<String> handleAgendaNotFoundException(AgendaNotFoundException e, WebRequest request) {
         return ResponseEntity
-                .status(HttpStatus.NOT_FOUND).body("Agenda não encontrada.");
+                .status(HttpStatus.NOT_FOUND).body("Pauta não encontrada.");
     }
 
     @ExceptionHandler(value

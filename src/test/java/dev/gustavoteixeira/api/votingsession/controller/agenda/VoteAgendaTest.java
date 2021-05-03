@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.gustavoteixeira.api.votingsession.dto.request.VoteRequestDTO;
 import dev.gustavoteixeira.api.votingsession.exception.AgendaClosedException;
 import dev.gustavoteixeira.api.votingsession.exception.AgendaNotFoundException;
+import dev.gustavoteixeira.api.votingsession.exception.AssociateIsNotAbleToVoteException;
 import dev.gustavoteixeira.api.votingsession.exception.VoteAlreadyExistsException;
 import dev.gustavoteixeira.api.votingsession.service.AgendaService;
 import org.junit.jupiter.api.Test;
@@ -122,6 +123,21 @@ class VoteAgendaTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapToJson(requestBody)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void voteAgendaWithAssociateNotAbleToVoteShouldReturnForbidden() throws Exception {
+        VoteRequestDTO requestBody = VoteRequestDTO.builder()
+                .associate(ASSOCIATE_IDENTIFIER)
+                .choice(NEGATIVE_CHOICE).build();
+
+        doThrow(AssociateIsNotAbleToVoteException.class)
+                .when(agendaService).voteAgenda(eq(AGENDA_ID), any(VoteRequestDTO.class));
+
+        mvc.perform(post("/agenda/".concat(AGENDA_ID).concat("/vote"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapToJson(requestBody)))
+                .andExpect(status().isForbidden());
     }
 
     protected String mapToJson(Object obj) throws JsonProcessingException {

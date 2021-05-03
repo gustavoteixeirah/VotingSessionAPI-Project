@@ -94,7 +94,7 @@ jobs:
   notifySlack:
     name: Notify success
     runs-on: ubuntu-18.04
-    needs: [heroku]
+    needs: [heroku, docker]
 
     steps:
       - name: Notify slack
@@ -102,13 +102,13 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         uses: abinoda/slack-action@master
         with:
-          args: '{\"channel\":\"C01VA672CJH\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Successfully* run unit tests!\"}}]}'
+          args: '{\"channel\":\"C01VA672CJH\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Successfully* run the pipeline!\"}}]}'
 
 
   notifySlackIfFailure:
     name: Notify failure
     runs-on: ubuntu-18.04
-    needs: [heroku]
+    needs: [heroku, docker]
     if: failure()
 
     steps:
@@ -117,4 +117,4 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         uses: abinoda/slack-action@master
         with:
-          args: '{\"channel\":\"C01VA672CJH\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Failed* to run unit tests!\"}}]}'
+          args: '{\"channel\":\"C01VA672CJH\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Failed* to run the pipeline!\"}}]}'

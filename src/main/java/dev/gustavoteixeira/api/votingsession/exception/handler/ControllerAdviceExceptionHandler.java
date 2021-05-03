@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import static dev.gustavoteixeira.api.votingsession.constants.ErrorMessages.*;
+
 @ControllerAdvice
 public class ControllerAdviceExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -17,55 +19,55 @@ public class ControllerAdviceExceptionHandler extends ResponseEntityExceptionHan
             = {AgendaAlreadyExistsException.class})
     public ResponseEntity<String> handleAgendaAlreadyExistsException(AgendaAlreadyExistsException e, WebRequest request) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST).body("Já existe uma pauta com esse nome.");
+                .status(HttpStatus.BAD_REQUEST).body(AGENDA_ALREADY_EXISTS.getMessage());
     }
 
     @ExceptionHandler(value
             = {AgendaIsAlreadyOpenException.class})
     public ResponseEntity<String> handleAgendaIsAlreadyOpenException(AgendaIsAlreadyOpenException e, WebRequest request) {
         return ResponseEntity
-                .status(HttpStatus.NOT_ACCEPTABLE).body("Essa pauta já está aberta.");
+                .status(HttpStatus.NOT_ACCEPTABLE).body(AGENDA_IS_ALREADY_OPEN.getMessage());
     }
 
     @ExceptionHandler(value
             = {AgendaHasAlreadyBeenClosedException.class})
     public ResponseEntity<String> handleAgendaHasAlreadyBeenClosedException(AgendaHasAlreadyBeenClosedException e, WebRequest request) {
         return ResponseEntity
-                .status(HttpStatus.NOT_ACCEPTABLE).body("Essa pauta já foi encerrada.");
+                .status(HttpStatus.NOT_ACCEPTABLE).body(AGENDA_HAS_ALREADY_BEEN_CLOSED.getMessage());
     }
 
     @ExceptionHandler(value
             = {VoteAlreadyExistsException.class})
     public ResponseEntity<String> handleVoteAlreadyExistsException(VoteAlreadyExistsException e, WebRequest request) {
         return ResponseEntity
-                .status(HttpStatus.NOT_ACCEPTABLE).body("Já existe um voto registrado desse associado para essa pauta.");
+                .status(HttpStatus.NOT_ACCEPTABLE).body(VOTE_ALREADY_EXISTS.getMessage());
     }
 
     @ExceptionHandler(value
             = {AgendaNotFoundException.class})
     public ResponseEntity<String> handleAgendaNotFoundException(AgendaNotFoundException e, WebRequest request) {
         return ResponseEntity
-                .status(HttpStatus.NOT_FOUND).body("Pauta não encontrada.");
+                .status(HttpStatus.NOT_FOUND).body(AGENDA_NOT_FOUND.getMessage());
     }
 
     @ExceptionHandler(value
             = {AgendaClosedException.class})
     public ResponseEntity<String> handleAgendaClosedException(AgendaClosedException e, WebRequest request) {
         return ResponseEntity
-                .status(HttpStatus.NOT_ACCEPTABLE).body("A votação para essa pauta já foi encerrada.");
+                .status(HttpStatus.NOT_ACCEPTABLE).body(AGENDA_CLOSED.getMessage());
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e, HttpHeaders headers, HttpStatus status, WebRequest request) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST).body("Um ou mais parâmetros da requisição são inválidos.");
+                .status(HttpStatus.BAD_REQUEST).body(METHOD_ARGUMENT_NOT_VALID.getMessage());
     }
 
     @ExceptionHandler(value
             = {AssociateIsNotAbleToVoteException.class})
     public ResponseEntity<String> handleAssociateIsNotAbleToVoteException(AssociateIsNotAbleToVoteException e, WebRequest request) {
         return ResponseEntity
-                .status(HttpStatus.FORBIDDEN).body("O associado não está apto a votar.");
+                .status(HttpStatus.FORBIDDEN).body(ASSOCIATE_IS_NOT_ABLE_TO_VOTE.getMessage());
     }
 
 }

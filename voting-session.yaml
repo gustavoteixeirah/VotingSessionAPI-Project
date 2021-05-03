@@ -3,7 +3,7 @@ info:
   title: 'Voting Session API'
   description: 'Voting Session API'
   version: 1.0.0
-host: 'localhost:8080'
+host: 'voting-session-api.herokuapp.com'
 
 tags:
   - name: 'Agenda Controller'

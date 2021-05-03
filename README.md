@@ -29,8 +29,12 @@ Você pode verificar a última análise do código através <a href="https://son
 Obs: Screenshot tirado em 02/05/2021 as 19h 30min. Para obter as mais recentes estatísticas, acesse o link informado anteriormente.
 
 ## Guia de como usar essa API
-Nessa seção, irei demonstrar como usar essa API.
-<br>
+Nessa seção, irei demonstrar como usar essa API. Caso você já tenha olhado a documentação do Swagger e queira fazer requisições, sinta-se a vontade para usar a URL desse projeto em produção:
+
+```
+https://voting-session-api.herokuapp.com/
+```
+
 Primeiramente, precisamos criar um pauta. Na API, que foi desenvolvida em inglês, chamamos uma pauta de "agenda".
 Também precisamos de uma duração dessa pauta (duration), porém não é obrigatória. Caso você não defina ela, por padrão a pauta terá a duração de 1 minuto.
 Para fazer as requisições, irei usar o curl. Abaixo, segue o exemplo para criar uma agenda chamada "Aumento de 3% no imposto de internet durante a pandemia" com duração de 10 minutos:

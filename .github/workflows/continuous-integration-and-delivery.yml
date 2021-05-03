@@ -104,6 +104,7 @@ jobs:
         with:
           args: '{\"channel\":\"C01VA672CJH\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Successfully* run the pipeline, deployed on Heroku!!\"}}]}'
 
+
   notifySlackDockerHub:
     name: Notify published on DockerHub
     runs-on: ubuntu-18.04

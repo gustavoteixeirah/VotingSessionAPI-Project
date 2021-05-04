@@ -26,7 +26,7 @@ Para analisar a qualidade de código, foi usado o Sonarcloud.
 Você pode verificar a última análise do código através <a href="https://sonarcloud.io/dashboard?id=iwhrim_VotingSessionAPI-Project">desse</a> link.
 
 <img src="https://teixeira983-images.s3.amazonaws.com/code_quality-voting-session-api.png" alt="Screenshot of the Code Quality report by Sonarcloud">
-Obs: Screenshot tirado em 02/05/2021 as 19h 30min. Para obter as mais recentes estatísticas, acesse o link informado anteriormente.
+Obs: Screenshot tirado em 04/05/2021 as 19h 51min. Para obter as mais recentes estatísticas, acesse o link informado anteriormente.
 
 ## Guia de como usar essa API
 Nessa seção, irei demonstrar como usar essa API. Caso você já tenha olhado a documentação do Swagger e queira fazer requisições, sinta-se a vontade para usar a URL desse projeto em produção:

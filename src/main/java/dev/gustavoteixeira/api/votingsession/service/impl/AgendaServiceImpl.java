@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static dev.gustavoteixeira.api.votingsession.converter.AgendaConverter.getAgendaResponse;
 
@@ -56,10 +57,13 @@ public class AgendaServiceImpl implements AgendaService {
         logger.info("AgendaServiceImpl.getAgenda - Start - Agenda identifier: {}", agendaId);
         var agenda = verifyIfAgendaExist(agendaId);
 
+        return getAgendaResponseDTOWithCountedVotes(agenda);
+    }
+
+    public AgendaResponseDTO getAgendaResponseDTOWithCountedVotes(Agenda agenda) {
         AgendaResponseDTO agendaResponse = getAgendaResponse(agenda);
 
         countVotes(agendaResponse);
-
         return agendaResponse;
     }
 
@@ -69,7 +73,7 @@ public class AgendaServiceImpl implements AgendaService {
 
         var agenda = verifyIfAgendaExist(agendaId);
         verifyIfAgendaIsAlreadyOpen(agenda);
-        verifyIfAgendaIsClosed(agenda);
+        verifyIfAgendaHasAlreadyBeenClosed(agenda);
 
         agenda.setStartTime(LocalDateTime.now());
         agendaRepository.save(agenda);
@@ -95,6 +99,14 @@ public class AgendaServiceImpl implements AgendaService {
         registerVote(vote);
     }
 
+    @Override
+    public List<Agenda> getAllUnpublishedAgendas() {
+        var agendas = agendaRepository.findAll();
+        return agendas.stream()
+                .filter(agenda -> !agendaIsOpen(agenda))
+                .collect(Collectors.toList());
+    }
+
     private void verifyIfAssociateIsAbleToVote(VoteRequestDTO voteRequest) {
         var associateVotingStatus = associateValidatorClient.getAssociateVotingStatus(voteRequest.getAssociate());
         if (!associateVotingStatus.getStatus().equals("ABLE_TO_VOTE")) {
@@ -116,12 +128,16 @@ public class AgendaServiceImpl implements AgendaService {
                 .filter(vote -> vote.getChoice().equals(POSITIVE_VOTE)).count());
     }
 
-    private void verifyIfAgendaIsClosed(Agenda agenda) {
+    private void verifyIfAgendaHasAlreadyBeenClosed(Agenda agenda) {
         if (!agendaIsOpen(agenda) && agenda.getStartTime() != null) {
             logger.error("AgendaServiceImpl.verifyIfAgendaIsClosed - Error - Agenda has already been closed " +
                     "- Agenda identifier: {}", agenda.getId());
             throw new AgendaHasAlreadyBeenClosedException();
         }
+    }
+
+    private boolean agendaHasAlreadyBeenClosed(Agenda agenda) {
+        return !agendaIsOpen(agenda) && agenda.getStartTime() != null;
     }
 
     private void verifyIfAgendaIsAlreadyOpen(Agenda agenda) {

@@ -18,15 +18,11 @@ Essa solução deve ser executada na nuvem e promover as seguintes funcionalidad
 ## Documentação da API
 A documentação da API está disponível no formato Swagger. O arquivo com a documentação pode localizado em ./voting-session.yml
 
-<img src="https://teixeira983-images.s3.amazonaws.com/voting-session-api-documentation.png" alt="Screenshot of the Swagger UI documentation">
 
 ## Qualidade de código
 Para analisar a qualidade de código, foi usado o Sonarcloud.
 <br>
 Você pode verificar a última análise do código através <a href="https://sonarcloud.io/dashboard?id=iwhrim_VotingSessionAPI-Project">desse</a> link.
-
-<img src="https://teixeira983-images.s3.amazonaws.com/code_quality-voting-session-api.png" alt="Screenshot of the Code Quality report by Sonarcloud">
-Obs: Screenshot tirado em 04/05/2021 as 19h 51min. Para obter as mais recentes estatísticas, acesse o link informado anteriormente.
 
 ## Guia de como usar essa API
 Nessa seção, irei demonstrar como usar essa API. Caso você já tenha olhado a documentação do Swagger e queira fazer requisições, sinta-se a vontade para usar a URL desse projeto em produção:
@@ -40,7 +36,7 @@ Também precisamos de uma duração dessa pauta (duration), porém não é obrig
 Para fazer as requisições, irei usar o curl. Abaixo, segue o exemplo para criar uma agenda chamada "Aumento de 3% no imposto de internet durante a pandemia" com duração de 10 minutos:
 
 ```
-curl --location --request POST 'https://voting-session-api.herokuapp.com//agenda' \
+curl --location --request POST 'https:/voting-session-api.herokuapp.com/agenda' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "name":"Aumento de 3% no imposto de ianternet duraante a pandemia",
@@ -57,7 +53,7 @@ https://voting-session-api.herokuapp.com/agenda/608f2b4fe422d16ab6d208ea
 Com esse identificador, podemos fazer a requisição de GET, que retorna a pauta:
 
 ```
-curl --location --request GET 'https://voting-session-api.herokuapp.com//agenda/608f2b4fe422d16ab6d208ea' \
+curl --location --request GET 'https:/voting-session-api.herokuapp.com/agenda/608f2b4fe422d16ab6d208ea' \
 --header 'Content-Type: application/json'
 ```
 
@@ -78,7 +74,7 @@ O retorno é o objeto representando a agenda:
 Podemos ver que a pauta está com o status "opened" como falso. Para abrirmos a pauta, dando inicio a possibilidade de votação nela, devemos chamar o endpoint de abertura de pauta:
 
 ```
-curl --location --request PATCH 'https://voting-session-api.herokuapp.com//agenda/608f2b4fe422d16ab6d208ea/start' \
+curl --location --request PATCH 'https:/voting-session-api.herokuapp.com/agenda/608f2b4fe422d16ab6d208ea/start' \
 --header 'Content-Type: application/json'
 ```
 
@@ -99,7 +95,7 @@ Com isso, a pauta estará aberta, e podemos votar nela. Podemos validar isso cha
 Perceba que agora o status "opened" está como true. Dessa maneira, podemos votar. Para isso, chamamos o endpoint de votação, informando o identificador da pauta, e um objeto no corpo da requisição descrevendo o nosso voto:
 
 ```
-curl --location --request POST 'https://voting-session-api.herokuapp.com//agenda/608f2b4fe422d16ab6d208ea/vote' \
+curl --location --request POST 'https:/voting-session-api.herokuapp.com/agenda/608f2b4fe422d16ab6d208ea/vote' \
 --header 'Content-Type: application/json' \
 --data-raw '{
 "associate": "19839091069",
@@ -135,6 +131,3 @@ A pipeline é constituída das seguintes etapas:
 4. Publish on Docker Hub: essa etapa cria o container da aplicação e então publica ela no Docker Hub
 5. Notify: nessa, são duas possibilidades, se der tudo certo com as etapas anteriores, será notificado no meu Slack uma mensagem de sucesso, senão, uma mensagem de falha.
 
-
-Abaixo, um screenshot da pipeline:
-<img src="https://teixeira983-images.s3.amazonaws.com/voting-session-api-ci-cd.png" alt="Screenshot of CI/CD pipeline">

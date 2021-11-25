@@ -61,7 +61,7 @@ jobs:
   heroku:
     name: Deploy to Heroku
     runs-on: ubuntu-18.04
-    needs: [sonarcloud]
+#    needs: [sonarcloud]
 
     steps:
       - uses: actions/checkout@v2
@@ -79,7 +79,7 @@ jobs:
   docker:
     name: Publish on Docker Hub
     runs-on: ubuntu-18.04
-    needs: [sonarcloud]
+#    needs: [sonarcloud]
     env:
       REPO: teixeira963
 

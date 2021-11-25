@@ -47,7 +47,6 @@ test {
 	useJUnitPlatform()
 }
 
-
 sonarqube {
 	properties {
 		property "sonar.projectKey", "gustavoteixeiradev_VotingSessionAPI-Project"
@@ -76,4 +75,5 @@ jacocoTestReport {
 jacoco {
 	toolVersion = "0.8.7"
 }
+
 check.dependsOn jacocoTestReport

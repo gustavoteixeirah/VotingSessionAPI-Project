@@ -18,11 +18,9 @@ Essa solução deve ser executada na nuvem e promover as seguintes funcionalidad
 ## Documentação da API
 A documentação da API está disponível no formato Swagger. O arquivo com a documentação pode localizado em ./voting-session.yml
 
-
 ## Qualidade de código
 Para analisar a qualidade de código, foi usado o Sonarcloud.
 <br>
-Você pode verificar a última análise do código através <a href="https://sonarcloud.io/dashboard?id=iwhrim_VotingSessionAPI-Project">desse</a> link.
 
 ## Guia de como usar essa API
 Nessa seção, irei demonstrar como usar essa API. Caso você já tenha olhado a documentação do Swagger e queira fazer requisições, sinta-se a vontade para usar a URL desse projeto em produção:
@@ -36,10 +34,10 @@ Também precisamos de uma duração dessa pauta (duration), porém não é obrig
 Para fazer as requisições, irei usar o curl. Abaixo, segue o exemplo para criar uma agenda chamada "Aumento de 3% no imposto de internet durante a pandemia" com duração de 10 minutos:
 
 ```
-curl --location --request POST 'https:/voting-session-api.herokuapp.com/agenda' \
+curl --location --request POST 'https://voting-session-api.herokuapp.com/agenda' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "name":"Aumento de 3% no imposto de ianternet duraante a pandemia",
+    "name":"Aumento de 3% no imposto de internet durante a pandemia",
     "duration": 10
 }'
 ```
@@ -53,7 +51,7 @@ https://voting-session-api.herokuapp.com/agenda/608f2b4fe422d16ab6d208ea
 Com esse identificador, podemos fazer a requisição de GET, que retorna a pauta:
 
 ```
-curl --location --request GET 'https:/voting-session-api.herokuapp.com/agenda/608f2b4fe422d16ab6d208ea' \
+curl --location --request GET 'https://voting-session-api.herokuapp.com/agenda/608f2b4fe422d16ab6d208ea' \
 --header 'Content-Type: application/json'
 ```
 
@@ -62,7 +60,7 @@ O retorno é o objeto representando a agenda:
 ```
 {
     "id": "608f2b4fe422d16ab6d208ea",
-    "name": "Aumento de 3% no imposto de ianternet durante a pandemia",
+    "name": "Aumento de 3% no imposto de internet durante a pandemia",
     "startTime": null,
     "duration": 10,
     "positiveVotes": 0,
@@ -74,7 +72,7 @@ O retorno é o objeto representando a agenda:
 Podemos ver que a pauta está com o status "opened" como falso. Para abrirmos a pauta, dando inicio a possibilidade de votação nela, devemos chamar o endpoint de abertura de pauta:
 
 ```
-curl --location --request PATCH 'https:/voting-session-api.herokuapp.com/agenda/608f2b4fe422d16ab6d208ea/start' \
+curl --location --request PATCH 'https://voting-session-api.herokuapp.com/agenda/608f2b4fe422d16ab6d208ea/start' \
 --header 'Content-Type: application/json'
 ```
 
@@ -83,7 +81,7 @@ Com isso, a pauta estará aberta, e podemos votar nela. Podemos validar isso cha
 ```
 {
     "id": "608f2b4fe422d16ab6d208ea",
-    "name": "Aumento de 3% no imposto de ianternet durante a pandemia",
+    "name": "Aumento de 3% no imposto de internet durante a pandemia",
     "startTime": "2021-05-02T22:46:56.075",
     "duration": 10,
     "positiveVotes": 0,
@@ -95,7 +93,7 @@ Com isso, a pauta estará aberta, e podemos votar nela. Podemos validar isso cha
 Perceba que agora o status "opened" está como true. Dessa maneira, podemos votar. Para isso, chamamos o endpoint de votação, informando o identificador da pauta, e um objeto no corpo da requisição descrevendo o nosso voto:
 
 ```
-curl --location --request POST 'https:/voting-session-api.herokuapp.com/agenda/608f2b4fe422d16ab6d208ea/vote' \
+curl --location --request POST 'https://voting-session-api.herokuapp.com/agenda/608f2b4fe422d16ab6d208ea/vote' \
 --header 'Content-Type: application/json' \
 --data-raw '{
 "associate": "19839091069",
@@ -127,7 +125,5 @@ Sou um grande fã de CI/CD. Por isso, adicionei nesse projeto uma pipeline, util
 A pipeline é constituída das seguintes etapas:
 1. Test: onde são executados os testes da aplicação;
 2. Code Quality: onde o Sonarcloud faz a análise da qualidade do código e da cobertura de código;
-3. Deploy to Heroku: essa etapa realiza o deploy automatizado da aplicação no Heroku;
-4. Publish on Docker Hub: essa etapa cria o container da aplicação e então publica ela no Docker Hub
-5. Notify: nessa, são duas possibilidades, se der tudo certo com as etapas anteriores, será notificado no meu Slack uma mensagem de sucesso, senão, uma mensagem de falha.
+3. Publish on Docker Hub: essa etapa cria o container da aplicação e então publica ela no Docker Hub
 

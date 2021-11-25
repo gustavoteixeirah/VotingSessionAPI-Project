@@ -2,6 +2,15 @@ plugins {
 	id 'org.springframework.boot' version '2.3.10.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id "org.sonarqube" version "3.3"
+}
+
+sonarqube {
+	properties {
+		property "sonar.projectKey", "gustavoteixeiradev_VotingSessionAPI-Project"
+		property "sonar.organization", "devgustavoteixeira"
+		property "sonar.host.url", "https://sonarcloud.io"
+	}
 }
 
 group = 'dev.gustavoteixeira.api'

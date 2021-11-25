@@ -18,7 +18,7 @@ jacocoTestReport {
 		xml.enabled true
 	}
 }
-
+apply plugin: 'jacoco'
 test.finalizedBy jacocoTestReport
 
 tasks.named('sonarqube').configure {

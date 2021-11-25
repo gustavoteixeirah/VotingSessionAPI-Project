@@ -11,14 +11,20 @@ sonarqube {
 		property "sonar.projectKey", "gustavoteixeiradev_VotingSessionAPI-Project"
 		property "sonar.organization", "devgustavoteixeira"
 		property "sonar.host.url", "https://sonarcloud.io"
+		property 'sonar.core.codeCoveragePlugin', 'jacoco'
+		property 'sonar.coverage.jacoco.xmlReportPaths', '${project.buildDir}/reports/jacoco.xml'
 	}
 }
 jacocoTestReport {
 	dependsOn test // tests are required to run before generating the report
 	reports {
 		xml.enabled true
-		csv.required = false
-		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+		xml.enabled true
+		csv.enabled false
+		//to create coverage report in html
+		html.destination file("${buildDir}/reports/coverage")
+		//for XML
+		xml.destination file("${buildDir}/reports/jacoco.xml")
 	}
 }
 

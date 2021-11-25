@@ -14,12 +14,17 @@ sonarqube {
 	}
 }
 jacocoTestReport {
+	dependsOn test // tests are required to run before generating the report
 	reports {
 		xml.enabled true
+		csv.required = false
+		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
 	}
 }
-apply plugin: 'jacoco'
-test.finalizedBy jacocoTestReport
+
+test {
+	finalizedBy jacocoTestReport // report is always generated after tests run
+}
 
 tasks.named('sonarqube').configure {
 	dependsOn test

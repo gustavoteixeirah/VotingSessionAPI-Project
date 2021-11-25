@@ -55,26 +55,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew build jacocoTestReport sonarqube --info
-#        run: ./gradlew jacocoTestReport sonarqube --info
-
-
-  heroku:
-    name: Deploy to Heroku
-    runs-on: ubuntu-18.04
-#    needs: [sonarcloud]
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Build with Gradle
-        run: ./gradlew build
-
-      - name: Deploy to Heroku
-        uses: AkhileshNS/heroku-deploy@v3.8.8
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
-          heroku_app_name: ${{secrets.HEROKU_APP}}
 
   docker:
     name: Publish on Docker Hub
